@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Create account</h2>
+  <form id="registerForm" class="stack-form">
+    <label>
+      Email
+      <input id="registerEmail" type="email" required />
+    </label>
+    <label>
+      Password
+      <input id="registerPassword" type="password" minlength="6" required />
+    </label>
+    <button type="submit">Register</button>
+  </form>
+  <p class="muted">Already have an account? <a href="/login">Sign in</a>.</p>
+  <pre id="registerOut" class="out"></pre>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/auth.js" defer></script>
+{% endblock %}

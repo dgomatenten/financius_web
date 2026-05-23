@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Cards - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card" data-master-page="cards">
+  <h2>Payment Cards</h2>
+  <p>Create and deactivate cards used for receipt categorization and budgeting.</p>
+
+  <div class="grid-2">
+    <article class="panel">
+      <h3>Card List</h3>
+      <button id="loadCardsBtn" type="button">Load Cards</button>
+      <pre id="cardsOut" class="out"></pre>
+    </article>
+
+    <article class="panel">
+      <h3>Create Card</h3>
+      <form id="createCardForm" class="stack-form">
+        <label>Nickname<input id="cardNickname" type="text" required /></label>
+        <label>Type<input id="cardType" type="text" required placeholder="credit" /></label>
+        <label>Network<input id="cardNetwork" type="text" placeholder="Visa" /></label>
+        <label>Color Hex<input id="cardColorHex" type="text" placeholder="#0057b8" /></label>
+        <button type="submit">Create</button>
+      </form>
+      <pre id="createCardOut" class="out"></pre>
+    </article>
+  </div>
+
+  <article class="panel">
+    <h3>Deactivate Card</h3>
+    <form id="deactivateCardForm" class="stack-form">
+      <label>Card ID<input id="deactivateCardId" type="text" required /></label>
+      <button type="submit">Deactivate</button>
+    </form>
+    <pre id="deactivateCardOut" class="out"></pre>
+  </article>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/master-data.js" defer></script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Sign in</h2>
+  <form id="loginForm" class="stack-form">
+    <label>
+      Email
+      <input id="loginEmail" type="email" required />
+    </label>
+    <label>
+      Password
+      <input id="loginPassword" type="password" required />
+    </label>
+    <button type="submit">Login</button>
+  </form>
+  <hr />
+  <h3>Google Login</h3>
+  <div id="googleSignInSection">
+    <button id="googleSignInStart" type="button">Continue with Google</button>
+    <p id="googleSignInHint" class="muted"></p>
+  </div>
+  <details>
+    <summary>Manual Google token fallback</summary>
+    <form id="googleLoginForm" class="stack-form">
+      <label>
+        Google ID Token
+        <textarea id="googleIdToken" rows="3" required></textarea>
+      </label>
+      <button type="submit">Login with Google Token</button>
+    </form>
+  </details>
+  <p class="muted">No account yet? <a href="/register">Create one</a>.</p>
+  <pre id="loginOut" class="out"></pre>
+  <pre id="googleOut" class="out"></pre>
+</section>
+<script>
+  window.FINANCIUS_GOOGLE_CLIENT_ID = "{{ google_client_id|default('replace-me') }}";
+  window.FINANCIUS_GOOGLE_REDIRECT_URI = "{{ google_redirect_uri|default('/login') }}";
+</script>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/auth.js" defer></script>
+{% endblock %}

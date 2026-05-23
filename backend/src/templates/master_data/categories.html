@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Categories - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card" data-master-page="categories">
+  <h2>Categories</h2>
+  <p>Manage category hierarchy and correct automatic category mappings.</p>
+
+  <div class="grid-2">
+    <article class="panel">
+      <h3>Category Tree</h3>
+      <button id="loadCategoriesBtn" type="button">Load Categories</button>
+      <pre id="categoriesOut" class="out"></pre>
+    </article>
+
+    <article class="panel">
+      <h3>Create Category</h3>
+      <form id="createCategoryForm" class="stack-form">
+        <label>Name<input id="categoryName" type="text" required /></label>
+        <label>Parent ID<input id="categoryParentId" type="text" /></label>
+        <label>Needs/Wants
+          <select id="categoryNeedsWants">
+            <option value="needs">needs</option>
+            <option value="wants">wants</option>
+          </select>
+        </label>
+        <button type="submit">Create</button>
+      </form>
+      <pre id="createCategoryOut" class="out"></pre>
+    </article>
+  </div>
+
+  <article class="panel">
+    <h3>Review Mapping</h3>
+    <button id="loadMappingsBtn" type="button">Load Mappings</button>
+    <form id="correctMappingForm" class="stack-form">
+      <label>Mapping ID<input id="mappingId" type="text" required /></label>
+      <label>Correct Category ID<input id="mappingCategoryId" type="text" required /></label>
+      <button type="submit">Correct Mapping</button>
+    </form>
+    <pre id="mappingOut" class="out"></pre>
+  </article>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/master-data.js" defer></script>
+{% endblock %}

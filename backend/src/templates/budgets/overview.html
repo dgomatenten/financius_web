@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Budget Overview - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Budget Overview</h2>
+  <p id="sessionUserText" class="muted"></p>
+  <p class="section-intro">Review spend progress versus budget by category for the selected month.</p>
+  <form class="toolbar" onsubmit="return false;">
+    <label>Month (YYYY-MM)<input id="progressMonth" type="text" /></label>
+    <button id="loadBudgetProgressBtn" class="toolbar-action" type="button">Load Budget Progress</button>
+  </form>
+  <div id="budgetProgressOut" class="out fade-in-up"></div>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/budgets.js" defer></script>
+{% endblock %}

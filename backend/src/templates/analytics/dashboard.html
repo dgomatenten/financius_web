@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Analytics Dashboard</h2>
+  <p id="sessionUserText" class="muted"></p>
+  <p class="section-intro">Track spending with trend cards, category leaders, benchmark deltas, and compact drill-down tables.</p>
+
+  <form id="analyticsFilters" class="toolbar">
+    <label>Period
+      <select id="analyticsPeriod">
+        <option value="this_month">This Month</option>
+        <option value="last_month">Last Month</option>
+        <option value="m3">Last 3 Months</option>
+        <option value="m6">Last 6 Months</option>
+        <option value="m12">Last 12 Months</option>
+        <option value="ytd">Year to Date</option>
+      </select>
+    </label>
+    <label>Currency
+      <select id="analyticsCurrency">
+        <option>USD</option>
+        <option>JPY</option>
+        <option>EUR</option>
+        <option>GBP</option>
+        <option>KRW</option>
+        <option>CNY</option>
+        <option>CAD</option>
+        <option>AUD</option>
+      </select>
+    </label>
+    <button class="toolbar-action" type="submit">Apply Filters</button>
+  </form>
+
+  <p id="analyticsStatus" class="status-note">Loading analytics and building visual summaries...</p>
+
+  <div id="analyticsKpis" class="kpi-grid"></div>
+
+  <div class="viz-grid">
+    <article class="viz-card fade-in-up">
+      <h3 class="viz-title">Top Categories</h3>
+      <ul id="analyticsCategoryList" class="list-clean"></ul>
+    </article>
+
+    <article class="viz-card fade-in-up delay-1">
+      <h3 class="viz-title">Top Shops</h3>
+      <ul id="analyticsShopList" class="list-clean"></ul>
+    </article>
+
+    <article class="viz-card fade-in-up delay-1">
+      <h3 class="viz-title">Daily Spend Calendar</h3>
+      <div id="analyticsCalendarTable" class="table-wrap"></div>
+    </article>
+
+    <article class="viz-card fade-in-up delay-2">
+      <h3 class="viz-title">Year-over-Year</h3>
+      <div id="analyticsYoyTable" class="table-wrap"></div>
+    </article>
+
+    <article class="viz-card fade-in-up delay-2">
+      <h3 class="viz-title">Benchmark Delta</h3>
+      <div id="analyticsBlsTable" class="table-wrap"></div>
+    </article>
+
+    <article class="viz-card fade-in-up delay-2">
+      <h3 class="viz-title">Insights</h3>
+      <div id="analyticsInsightsTags" class="metric-tags"></div>
+    </article>
+  </div>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/analytics.js" defer></script>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Dashboard</h2>
+  <p id="sessionUserText" class="muted"></p>
+  <p class="section-intro">Operational overview for service health, token state, and sync readiness.</p>
+  <div class="grid-2">
+    <article class="panel fade-in-up">
+      <h3>Health</h3>
+      <p class="muted">Validate backend service availability.</p>
+      <button id="healthBtn" type="button">Check Health</button>
+      <div id="healthOut" class="out"></div>
+    </article>
+    <article class="panel fade-in-up delay-1">
+      <h3>Sync Status</h3>
+      <p class="muted">Inspect authentication and latest sync state.</p>
+      <button id="syncBtn" type="button">Load Sync Status</button>
+      <div id="syncOut" class="out"></div>
+    </article>
+  </div>
+  <button id="logoutBtn" type="button">Log out</button>
+  <p class="muted">Logout revokes the refresh token on the server and clears browser storage.</p>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/dashboard.js" defer></script>
+{% endblock %}

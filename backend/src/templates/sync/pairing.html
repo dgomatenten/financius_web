@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Device Pairing - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Android Pairing</h2>
+  <p>Generate a short-lived pairing payload that your Android app can scan.</p>
+
+  <button id="pairingPayloadBtn" type="button">Generate Pairing Payload</button>
+  <pre id="pairingPayloadOut" class="out"></pre>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/pairing.js" defer></script>
+{% endblock %}

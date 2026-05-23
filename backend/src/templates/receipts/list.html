@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Receipts - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Receipts</h2>
+  <p id="sessionUserText" class="muted"></p>
+  <p id="receiptsSummary" class="muted"></p>
+  <p class="section-intro">Search, filter, update in bulk, and import order histories.</p>
+
+  <form id="receiptFilters" class="toolbar">
+    <label>Search<input id="search" type="text" placeholder="note contains..." /></label>
+    <label>Currency<input id="currency" type="text" placeholder="USD" /></label>
+    <label>Category ID<input id="categoryId" type="text" /></label>
+    <button class="toolbar-action" type="submit">Apply Filters</button>
+  </form>
+
+  <div class="grid-2">
+    <article class="panel fade-in-up">
+      <h3>List</h3>
+      <button id="loadReceiptsBtn" type="button">Load Receipts</button>
+      <div id="receiptsOut" class="out"></div>
+    </article>
+
+    <article class="panel fade-in-up delay-1">
+      <h3>Bulk Action</h3>
+      <form id="bulkForm" class="stack-form">
+        <label>Operation
+          <select id="bulkOperation">
+            <option value="recategorize">recategorize</option>
+            <option value="reassign_card">reassign_card</option>
+            <option value="delete">delete</option>
+          </select>
+        </label>
+        <label>Receipt IDs (comma separated)<input id="bulkReceiptIds" type="text" /></label>
+        <label>Category ID<input id="bulkCategoryId" type="text" /></label>
+        <label>Payment Card ID<input id="bulkPaymentCardId" type="text" /></label>
+        <button type="submit">Apply Bulk Action</button>
+      </form>
+      <div id="bulkOut" class="out"></div>
+    </article>
+  </div>
+
+  <article class="panel fade-in-up delay-2">
+    <h3>Amazon CSV Import</h3>
+    <form id="amazonImportForm" enctype="multipart/form-data" class="stack-form">
+      <label>CSV File<input id="amazonCsvFile" type="file" accept=".csv" required /></label>
+      <button type="submit">Import</button>
+    </form>
+    <div id="importOut" class="out"></div>
+  </article>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/receipts.js" defer></script>
+<script src="/static/js/receipt-import.js" defer></script>
+{% endblock %}

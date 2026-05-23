@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Shops - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card" data-master-page="shops">
+  <h2>Shops</h2>
+  <p>Review synced shops and merge duplicates.</p>
+
+  <div class="grid-2">
+    <article class="panel">
+      <h3>Shop List</h3>
+      <button id="loadShopsBtn" type="button">Load Shops</button>
+      <pre id="shopsOut" class="out"></pre>
+    </article>
+
+    <article class="panel">
+      <h3>Merge Shops</h3>
+      <form id="mergeShopsForm" class="stack-form">
+        <label>Primary Shop ID<input id="primaryShopId" type="text" required /></label>
+        <label>Secondary Shop ID<input id="secondaryShopId" type="text" required /></label>
+        <button type="submit">Merge</button>
+      </form>
+      <pre id="mergeShopsOut" class="out"></pre>
+    </article>
+  </div>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/master-data.js" defer></script>
+{% endblock %}

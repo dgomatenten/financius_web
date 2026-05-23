@@ -1,0 +1,1124 @@
+openapi: 3.1.0
+info:
+  title: Financius Web API
+  version: 1.0.0
+  description: |
+    Versioned REST contract for Financius Web.
+    All responses use the envelope: { data, error, meta }.
+servers:
+  - url: http://localhost:8000
+    description: Local
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: auth
+  - name: sync
+  - name: receipts
+  - name: categories
+  - name: shops
+  - name: cards
+  - name: budgets
+  - name: recurring
+  - name: amortization
+  - name: analytics
+  - name: export
+
+paths:
+  /api/v1/auth/register:
+    post:
+      tags: [auth]
+      summary: Register user account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEnvelope'
+
+  /api/v1/auth/login:
+    post:
+      tags: [auth]
+      summary: Login with email/password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEnvelope'
+
+  /api/v1/auth/google:
+    post:
+      tags: [auth]
+      summary: Login with Google OAuth code/token exchange
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleLoginRequest'
+      responses:
+        '200':
+          description: Logged in via Google
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEnvelope'
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [auth]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthEnvelope'
+
+  /api/v1/sync:
+    post:
+      tags: [sync]
+      summary: Android sync upsert payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncRequest'
+      responses:
+        '200':
+          description: Sync accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncEnvelope'
+
+  /api/v1/sync/status:
+    get:
+      tags: [sync]
+      summary: Get last sync status for current user
+      responses:
+        '200':
+          description: Sync status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncStatusEnvelope'
+
+  /api/v1/pairing/qr:
+    get:
+      tags: [sync]
+      summary: Generate QR pairing payload
+      responses:
+        '200':
+          description: QR pairing payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QrPairingEnvelope'
+
+  /api/v1/receipts:
+    get:
+      tags: [receipts]
+      summary: List receipts with search/filter/pagination
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Currency'
+        - $ref: '#/components/parameters/CategoryId'
+        - $ref: '#/components/parameters/Search'
+      responses:
+        '200':
+          description: Receipt list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptListEnvelope'
+
+  /api/v1/receipts/{receiptId}:
+    get:
+      tags: [receipts]
+      summary: Get one receipt with line items
+      parameters:
+        - $ref: '#/components/parameters/ReceiptId'
+      responses:
+        '200':
+          description: Receipt details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptEnvelope'
+    patch:
+      tags: [receipts]
+      summary: Edit receipt fields
+      parameters:
+        - $ref: '#/components/parameters/ReceiptId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptEnvelope'
+
+  /api/v1/receipts/bulk:
+    post:
+      tags: [receipts]
+      summary: Bulk mutate receipts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReceiptBulkRequest'
+      responses:
+        '200':
+          description: Bulk operation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkResultEnvelope'
+
+  /api/v1/receipts/import/amazon:
+    post:
+      tags: [receipts]
+      summary: Import Amazon CSV receipts
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Import summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkResultEnvelope'
+
+  /api/v1/categories:
+    get:
+      tags: [categories]
+      summary: List category hierarchy
+      responses:
+        '200':
+          description: Category tree
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryTreeEnvelope'
+    post:
+      tags: [categories]
+      summary: Create category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryEnvelope'
+
+  /api/v1/categories/{categoryId}:
+    patch:
+      tags: [categories]
+      summary: Update category
+      parameters:
+        - $ref: '#/components/parameters/CategoryIdPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdateRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryEnvelope'
+    delete:
+      tags: [categories]
+      summary: Delete category (with reassignment checks)
+      parameters:
+        - $ref: '#/components/parameters/CategoryIdPath'
+      responses:
+        '200':
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/shops:
+    get:
+      tags: [shops]
+      summary: List shops
+      responses:
+        '200':
+          description: Shop list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopListEnvelope'
+
+  /api/v1/shops/{shopId}/merge:
+    post:
+      tags: [shops]
+      summary: Merge two shops
+      parameters:
+        - $ref: '#/components/parameters/ShopId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [secondaryShopId]
+              properties:
+                secondaryShopId:
+                  type: string
+      responses:
+        '200':
+          description: Merge complete
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/cards:
+    get:
+      tags: [cards]
+      summary: List payment cards
+      responses:
+        '200':
+          description: Card list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardListEnvelope'
+    post:
+      tags: [cards]
+      summary: Create payment card
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardEnvelope'
+
+  /api/v1/budgets:
+    get:
+      tags: [budgets]
+      summary: List budget entries for selected month
+      parameters:
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: '^\\d{4}-\\d{2}$'
+      responses:
+        '200':
+          description: Budget entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetListEnvelope'
+    post:
+      tags: [budgets]
+      summary: Create/update budget entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetUpsertRequest'
+      responses:
+        '200':
+          description: Upserted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetEnvelope'
+
+  /api/v1/recurring:
+    get:
+      tags: [recurring]
+      summary: List recurring templates and occurrences
+      responses:
+        '200':
+          description: Recurring list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringListEnvelope'
+    post:
+      tags: [recurring]
+      summary: Create recurring template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecurringCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringEnvelope'
+
+  /api/v1/amortization:
+    get:
+      tags: [amortization]
+      summary: List amortization rules
+      responses:
+        '200':
+          description: Rule list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmortizationListEnvelope'
+    post:
+      tags: [amortization]
+      summary: Create amortization rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmortizationCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmortizationEnvelope'
+
+  /api/v1/analytics/summary:
+    get:
+      tags: [analytics]
+      summary: Summary metrics for selected period/currency
+      parameters:
+        - $ref: '#/components/parameters/Period'
+        - $ref: '#/components/parameters/Currency'
+      responses:
+        '200':
+          description: Summary analytics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsSummaryEnvelope'
+
+  /api/v1/analytics/category-breakdown:
+    get:
+      tags: [analytics]
+      summary: Category totals with drill-down support
+      parameters:
+        - $ref: '#/components/parameters/Period'
+        - $ref: '#/components/parameters/Currency'
+      responses:
+        '200':
+          description: Category breakdown
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/analytics/calendar:
+    get:
+      tags: [analytics]
+      summary: Daily spending heat-map dataset
+      parameters:
+        - $ref: '#/components/parameters/Period'
+        - $ref: '#/components/parameters/Currency'
+      responses:
+        '200':
+          description: Calendar data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/analytics/yoy:
+    get:
+      tags: [analytics]
+      summary: Year-over-year per-category comparison
+      parameters:
+        - $ref: '#/components/parameters/Period'
+        - $ref: '#/components/parameters/Currency'
+      responses:
+        '200':
+          description: YoY data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/analytics/benchmarks/bls:
+    get:
+      tags: [analytics]
+      summary: BLS benchmark comparison data
+      parameters:
+        - $ref: '#/components/parameters/Period'
+        - $ref: '#/components/parameters/Currency'
+      responses:
+        '200':
+          description: BLS comparison data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/analytics/insights:
+    get:
+      tags: [analytics]
+      summary: 13 insight metrics
+      parameters:
+        - $ref: '#/components/parameters/Period'
+        - $ref: '#/components/parameters/Currency'
+      responses:
+        '200':
+          description: Insight metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+
+  /api/v1/export:
+    get:
+      tags: [export]
+      summary: Export receipt/analytics data as JSON or CSV
+      parameters:
+        - name: format
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [json, csv]
+        - $ref: '#/components/parameters/FromDate'
+        - $ref: '#/components/parameters/ToDate'
+        - $ref: '#/components/parameters/Currency'
+        - $ref: '#/components/parameters/CategoryId'
+      responses:
+        '200':
+          description: Export stream/file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiEnvelope'
+            text/csv:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    PageSize:
+      name: pageSize
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 200, default: 25 }
+    FromDate:
+      name: from
+      in: query
+      schema: { type: string, format: date }
+    ToDate:
+      name: to
+      in: query
+      schema: { type: string, format: date }
+    Currency:
+      name: currency
+      in: query
+      schema:
+        type: string
+        enum: [USD, JPY, EUR, GBP, KRW, CNY, CAD, AUD]
+    CategoryId:
+      name: categoryId
+      in: query
+      schema: { type: string }
+    Search:
+      name: q
+      in: query
+      schema: { type: string }
+    Period:
+      name: period
+      in: query
+      schema:
+        type: string
+        enum: [this_month, last_month, m3, m6, m12, ytd, custom]
+    ReceiptId:
+      name: receiptId
+      in: path
+      required: true
+      schema: { type: string }
+    CategoryIdPath:
+      name: categoryId
+      in: path
+      required: true
+      schema: { type: string }
+    ShopId:
+      name: shopId
+      in: path
+      required: true
+      schema: { type: string }
+
+  schemas:
+    ApiEnvelope:
+      type: object
+      required: [data, error, meta]
+      properties:
+        data:
+          nullable: true
+        error:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/ErrorObject'
+        meta:
+          $ref: '#/components/schemas/MetaObject'
+
+    ErrorObject:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        details: {}
+
+    MetaObject:
+      type: object
+      properties:
+        requestId: { type: string }
+        timestamp: { type: string, format: date-time }
+        pagination:
+          type: object
+          properties:
+            page: { type: integer }
+            pageSize: { type: integer }
+            total: { type: integer }
+
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 8 }
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    GoogleLoginRequest:
+      type: object
+      required: [idToken]
+      properties:
+        idToken: { type: string }
+
+    RefreshTokenRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken: { type: string }
+
+    AuthPayload:
+      type: object
+      required: [accessToken, refreshToken, expiresIn]
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+        expiresIn: { type: integer }
+
+    AuthEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AuthPayload'
+
+    SyncRequest:
+      type: object
+      properties:
+        deviceId: { type: string }
+        receipts:
+          type: array
+          items: { $ref: '#/components/schemas/ReceiptPayload' }
+        categories:
+          type: array
+          items: { $ref: '#/components/schemas/CategoryPayload' }
+        shops:
+          type: array
+          items: { $ref: '#/components/schemas/ShopPayload' }
+        cards:
+          type: array
+          items: { $ref: '#/components/schemas/CardPayload' }
+
+    SyncResult:
+      type: object
+      properties:
+        accepted:
+          type: object
+          properties:
+            receipts: { type: integer }
+            categories: { type: integer }
+            shops: { type: integer }
+            cards: { type: integer }
+        duplicates: { type: integer }
+        lastSyncAt: { type: string, format: date-time }
+
+    SyncEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/SyncResult'
+
+    SyncStatusEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                lastSyncAt: { type: string, format: date-time, nullable: true }
+                status: { type: string }
+
+    QrPairingEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                qrPayload:
+                  type: object
+                  required: [serverBaseUrl, pairingToken, expiresAt]
+                  properties:
+                    serverBaseUrl: { type: string }
+                    pairingToken: { type: string }
+                    expiresAt: { type: string, format: date-time }
+
+    ReceiptPayload:
+      type: object
+      properties:
+        externalId: { type: string }
+        receiptDate: { type: string, format: date-time }
+        currency: { type: string }
+        totalAmount: { type: number }
+
+    CategoryPayload:
+      type: object
+      properties:
+        externalId: { type: string }
+        name: { type: string }
+
+    ShopPayload:
+      type: object
+      properties:
+        externalId: { type: string }
+        name: { type: string }
+
+    CardPayload:
+      type: object
+      properties:
+        externalId: { type: string }
+        nickname: { type: string }
+
+    Receipt:
+      type: object
+      properties:
+        id: { type: string }
+        receiptDate: { type: string, format: date-time }
+        shopName: { type: string }
+        totalAmount: { type: number }
+        currency: { type: string }
+        categoryId: { type: string, nullable: true }
+
+    ReceiptLineItem:
+      type: object
+      properties:
+        name: { type: string }
+        quantity: { type: number }
+        unitPrice: { type: number }
+        lineTotal: { type: number }
+
+    ReceiptDetail:
+      allOf:
+        - $ref: '#/components/schemas/Receipt'
+        - type: object
+          properties:
+            lineItems:
+              type: array
+              items: { $ref: '#/components/schemas/ReceiptLineItem' }
+
+    ReceiptEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/ReceiptDetail' }
+
+    ReceiptListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items: { $ref: '#/components/schemas/Receipt' }
+
+    ReceiptUpdateRequest:
+      type: object
+      properties:
+        categoryId: { type: string, nullable: true }
+        note: { type: string, nullable: true }
+        paymentCardId: { type: string, nullable: true }
+
+    ReceiptBulkRequest:
+      type: object
+      required: [operation, receiptIds]
+      properties:
+        operation:
+          type: string
+          enum: [recategorize, reassign_card, delete]
+        receiptIds:
+          type: array
+          items: { type: string }
+        categoryId: { type: string }
+        paymentCardId: { type: string }
+
+    BulkResultEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                affectedCount: { type: integer }
+
+    Category:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        parentId: { type: string, nullable: true }
+        displayOrder: { type: integer }
+        isEngel: { type: boolean }
+        needsWants: { type: string, enum: [needs, wants] }
+        isHousing: { type: boolean }
+        isFixedExpense: { type: boolean }
+
+    CategoryCreateRequest:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string }
+        parentId: { type: string, nullable: true }
+        displayOrder: { type: integer }
+        isEngel: { type: boolean }
+        needsWants: { type: string, enum: [needs, wants] }
+        isHousing: { type: boolean }
+        isFixedExpense: { type: boolean }
+
+    CategoryUpdateRequest:
+      type: object
+      properties:
+        name: { type: string }
+        parentId: { type: string, nullable: true }
+        displayOrder: { type: integer }
+        isEngel: { type: boolean }
+        needsWants: { type: string, enum: [needs, wants] }
+        isHousing: { type: boolean }
+        isFixedExpense: { type: boolean }
+
+    CategoryEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Category' }
+
+    CategoryTreeEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/Category' }
+
+    Shop:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        address: { type: string, nullable: true }
+        defaultCategoryId: { type: string, nullable: true }
+
+    ShopListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/Shop' }
+
+    Card:
+      type: object
+      properties:
+        id: { type: string }
+        nickname: { type: string }
+        cardType: { type: string }
+        network: { type: string }
+        colorHex: { type: string }
+        isActive: { type: boolean }
+
+    CardCreateRequest:
+      type: object
+      required: [nickname, cardType]
+      properties:
+        nickname: { type: string }
+        cardType:
+          type: string
+          enum: [credit, debit, prepaid, digital_wallet]
+        network: { type: string }
+        colorHex: { type: string }
+
+    CardEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Card' }
+
+    CardListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/Card' }
+
+    Budget:
+      type: object
+      properties:
+        id: { type: string }
+        month: { type: string }
+        categoryId: { type: string, nullable: true }
+        mode:
+          type: string
+          enum: [manual, forecast, forecast_adjusted]
+        amount: { type: number }
+        adjustmentPct: { type: integer, nullable: true }
+        rolloverEnabled: { type: boolean }
+        rolloverBalance: { type: number }
+
+    BudgetUpsertRequest:
+      type: object
+      required: [month, mode, amount]
+      properties:
+        month: { type: string, pattern: '^\\d{4}-\\d{2}$' }
+        categoryId: { type: string, nullable: true }
+        mode:
+          type: string
+          enum: [manual, forecast, forecast_adjusted]
+        amount: { type: number }
+        adjustmentPct: { type: integer, minimum: 80, maximum: 120 }
+        rolloverEnabled: { type: boolean }
+
+    BudgetEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/Budget' }
+
+    BudgetListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/Budget' }
+
+    RecurringTemplate:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        expectedAmount: { type: number }
+        categoryId: { type: string }
+        frequency:
+          type: string
+          enum: [weekly, monthly, yearly]
+        startDate: { type: string, format: date }
+        isActive: { type: boolean }
+
+    RecurringCreateRequest:
+      type: object
+      required: [name, expectedAmount, categoryId, frequency, startDate]
+      properties:
+        name: { type: string }
+        expectedAmount: { type: number }
+        categoryId: { type: string }
+        frequency:
+          type: string
+          enum: [weekly, monthly, yearly]
+        startDate: { type: string, format: date }
+
+    RecurringEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/RecurringTemplate' }
+
+    RecurringListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                templates:
+                  type: array
+                  items: { $ref: '#/components/schemas/RecurringTemplate' }
+                upcoming:
+                  type: array
+                  items:
+                    type: object
+
+    AmortizationRule:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        totalAmount: { type: number }
+        months: { type: integer }
+        monthlyAmount: { type: number }
+        startMonth: { type: string }
+        status:
+          type: string
+          enum: [active, completed]
+
+    AmortizationCreateRequest:
+      type: object
+      required: [title, totalAmount, months, startMonth]
+      properties:
+        title: { type: string }
+        totalAmount: { type: number }
+        months: { type: integer, minimum: 2 }
+        startMonth: { type: string, pattern: '^\\d{4}-\\d{2}$' }
+        receiptId: { type: string, nullable: true }
+
+    AmortizationEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data: { $ref: '#/components/schemas/AmortizationRule' }
+
+    AmortizationListEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items: { $ref: '#/components/schemas/AmortizationRule' }
+
+    AnalyticsSummaryEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/ApiEnvelope'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                totalSpending: { type: number }
+                monthOverMonthPct: { type: number }
+                receiptCount: { type: integer }
+                topCategories:
+                  type: array
+                  items: { type: object }
+                topShops:
+                  type: array
+                  items: { type: object }

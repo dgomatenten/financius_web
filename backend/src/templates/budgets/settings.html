@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Budget Settings - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Budget Settings</h2>
+  <p id="sessionUserText" class="muted"></p>
+  <p class="section-intro">Configure monthly budget rules, forecasting mode, and rollover behavior.</p>
+
+  <form id="budgetForm" class="stack-form">
+    <label>Month (YYYY-MM)<input id="budgetMonth" type="text" required /></label>
+    <label>Category ID (blank for total)<input id="budgetCategoryId" type="text" /></label>
+    <label>Mode
+      <select id="budgetMode">
+        <option value="manual">manual</option>
+        <option value="forecast">forecast</option>
+        <option value="forecast_adjusted">forecast_adjusted</option>
+      </select>
+    </label>
+    <label>Amount<input id="budgetAmount" type="number" step="0.01" min="0" required /></label>
+    <label>Adjustment % (80-120)<input id="budgetAdjustmentPct" type="number" min="80" max="120" /></label>
+    <label><input id="budgetRollover" type="checkbox" /> Enable rollover</label>
+    <button type="submit">Save Budget</button>
+  </form>
+
+  <article class="panel fade-in-up">
+    <h3>Budget Entries</h3>
+    <button id="loadBudgetsBtn" type="button">Load Budgets</button>
+    <div id="budgetsOut" class="out"></div>
+  </article>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/budgets.js" defer></script>
+{% endblock %}

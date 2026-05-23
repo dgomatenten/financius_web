@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Receipt Detail - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Receipt Detail</h2>
+  <p id="receiptIdValue" data-receipt-id="{{ receipt_id }}">Receipt ID: {{ receipt_id }}</p>
+
+  <button id="loadReceiptDetailBtn" type="button">Load Receipt</button>
+  <pre id="receiptDetailOut" class="out"></pre>
+
+  <h3>Edit Receipt</h3>
+  <form id="receiptEditForm" class="stack-form">
+    <label>Category ID<input id="editCategoryId" type="text" /></label>
+    <label>Payment Card ID<input id="editPaymentCardId" type="text" /></label>
+    <label>Note<textarea id="editNote" rows="3"></textarea></label>
+    <button type="submit">Save Changes</button>
+  </form>
+  <pre id="receiptEditOut" class="out"></pre>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/receipts.js" defer></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Sync Status - Financius Web{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2>Android Sync Status</h2>
+  <p>Submit test payloads and verify latest sync status for your account.</p>
+
+  <div class="grid-2">
+    <article class="panel">
+      <h3>Push Sample Payload</h3>
+      <button id="sampleSyncBtn" type="button">Send Sample Sync</button>
+      <pre id="sampleSyncOut" class="out"></pre>
+    </article>
+
+    <article class="panel">
+      <h3>Current Status</h3>
+      <button id="syncStatusBtn" type="button">Load Status</button>
+      <pre id="syncStatusOut" class="out"></pre>
+    </article>
+  </div>
+</section>
+<script src="/static/js/session.js" defer></script>
+<script src="/static/js/sync.js" defer></script>
+{% endblock %}
