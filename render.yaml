@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: financius-web
+    runtime: docker
+    dockerfilePath: ./infra/docker/backend.Dockerfile
+    dockerContext: .
+    plan: free
+    branch: main
+    autoDeploy: false  # CI controls deploys via deploy hook
+
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///./data/financius.db
