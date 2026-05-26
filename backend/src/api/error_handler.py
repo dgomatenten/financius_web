@@ -1,8 +1,8 @@
 from flask import Flask, Response, jsonify
 
 from api.envelope import err
-from utils.logging import request_id
 from utils.exceptions import AppError
+from utils.logging import request_id
 
 
 def register_error_handlers(app: Flask) -> None:

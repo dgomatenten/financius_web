@@ -1,8 +1,7 @@
+import os
 from dataclasses import dataclass
 from functools import lru_cache
-import os
 from pathlib import Path
-
 
 _DEFAULT_LOG_FILE = str(Path(__file__).resolve().parents[2] / "logs" / "app.log")
 

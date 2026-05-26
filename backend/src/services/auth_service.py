@@ -1,13 +1,13 @@
-from typing import Any
 import logging
+from typing import Any
 
 from repositories.user_repository import UserRepository
 from services.auth_tokens import (
     decode_refresh_token,
     hash_password,
-    verify_password,
     issue_access_token,
     issue_refresh_token,
+    verify_password,
 )
 from utils.exceptions import (
     DuplicateEmailError,

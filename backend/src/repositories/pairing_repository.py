@@ -1,8 +1,7 @@
 """Repository for pairing tokens"""
 
-from datetime import datetime
-from typing import Optional
 import hashlib
+from datetime import datetime
 
 from config.database import SessionLocal
 from models.pairing_token import PairingToken
@@ -39,7 +38,7 @@ class PairingRepository:
 
     def validate_pairing_token(
         self, user_id: str, token: str
-    ) -> Optional[PairingToken]:
+    ) -> PairingToken | None:
         """
         Validate a pairing token for a user.
         Returns the token if valid and not expired, None otherwise.

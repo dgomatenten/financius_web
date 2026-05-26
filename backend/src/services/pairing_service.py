@@ -1,7 +1,7 @@
 """Pairing service for Android device QR code authentication"""
 
-from datetime import datetime, timedelta, timezone
 import secrets
+from datetime import UTC, datetime, timedelta
 
 from config.settings import get_settings
 from repositories.pairing_repository import PairingRepository
@@ -31,7 +31,7 @@ class PairingService:
         token = secrets.token_urlsafe(24)
 
         # Calculate expiry
-        expires_at = datetime.now(tz=timezone.utc) + timedelta(
+        expires_at = datetime.now(tz=UTC) + timedelta(
             seconds=self.settings.qr_pairing_token_ttl_seconds
         )
 

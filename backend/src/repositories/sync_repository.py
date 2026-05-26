@@ -1,13 +1,13 @@
 """Repository for synced data operations"""
 
+from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
-from datetime import datetime, timezone
 
 from config.database import SessionLocal
-from models.receipt import Receipt, ReceiptLineItem
 from models.category import Category
-from models.master_data import Shop, PaymentCard
+from models.master_data import PaymentCard, Shop
+from models.receipt import Receipt, ReceiptLineItem
 
 
 class SyncRepository:
@@ -54,17 +54,17 @@ class SyncRepository:
     def _parse_iso_datetime(self, iso_string: str | None) -> datetime:
         """Parse ISO 8601 datetime string, return aware datetime in UTC"""
         if not iso_string:
-            return datetime.now(tz=timezone.utc)
+            return datetime.now(tz=UTC)
         try:
             # Replace 'Z' suffix with '+00:00' for fromisoformat compatibility
             iso_string = iso_string.replace('Z', '+00:00')
             dt = datetime.fromisoformat(iso_string)
             # Ensure it's timezone-aware
             if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
+                dt = dt.replace(tzinfo=UTC)
             return dt
         except Exception:
-            return datetime.now(tz=timezone.utc)
+            return datetime.now(tz=UTC)
 
     def _upsert_receipts(self, user_id: str, receipts_list: list[dict]) -> dict[str, int]:
         """
@@ -94,9 +94,12 @@ class SyncRepository:
 
             if existing:
                 # Update existing receipt
-                existing.receipt_date = self._parse_iso_datetime(receipt_data.get("receiptDate") or receipt_data.get("date"))
+                raw_date = receipt_data.get("receiptDate") or receipt_data.get("date")
+                existing.receipt_date = self._parse_iso_datetime(raw_date)
                 existing.currency = receipt_data.get("currency", existing.currency)
-                existing.total_amount = receipt_data.get("total", receipt_data.get("totalAmount", existing.total_amount))
+                existing.total_amount = receipt_data.get(
+                    "total", receipt_data.get("totalAmount", existing.total_amount)
+                )
                 if shop_id:
                     existing.shop_id = shop_id
                 if category_id:

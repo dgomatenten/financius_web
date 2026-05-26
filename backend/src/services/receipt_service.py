@@ -1,7 +1,7 @@
 from typing import Any
 
 from repositories.receipt_repository import ReceiptRepository
-from utils.exceptions import ValidationError, UserNotFoundError
+from utils.exceptions import UserNotFoundError, ValidationError
 
 
 class ReceiptService:

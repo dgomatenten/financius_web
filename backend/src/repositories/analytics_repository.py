@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from sqlalchemy import and_, func
@@ -176,8 +176,8 @@ class AnalyticsRepository:
         return filters
 
     def _period_bounds(self, period: str) -> tuple[datetime, datetime]:
-        now = datetime.now(tz=timezone.utc)
-        month_start = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
+        now = datetime.now(tz=UTC)
+        month_start = datetime(now.year, now.month, 1, tzinfo=UTC)
 
         def shift_months(dt: datetime, delta: int) -> datetime:
             year = dt.year
@@ -188,7 +188,7 @@ class AnalyticsRepository:
             while month > 12:
                 month -= 12
                 year += 1
-            return datetime(year, month, 1, tzinfo=timezone.utc)
+            return datetime(year, month, 1, tzinfo=UTC)
 
         if period == "this_month":
             return month_start, shift_months(month_start, 1)
@@ -202,7 +202,7 @@ class AnalyticsRepository:
         if period in {"m12", "custom"}:
             return shift_months(month_start, -11), shift_months(month_start, 1)
         if period == "ytd":
-            start = datetime(now.year, 1, 1, tzinfo=timezone.utc)
+            start = datetime(now.year, 1, 1, tzinfo=UTC)
             return start, shift_months(month_start, 1)
         return month_start, shift_months(month_start, 1)
 

@@ -7,7 +7,6 @@ from services.bls_benchmark_service import BLSBenchmarkService
 from services.insights_service import InsightsService
 from utils.auth import get_current_user_id
 
-
 bp = Blueprint("analytics", __name__)
 
 

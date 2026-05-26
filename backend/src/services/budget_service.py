@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
 import re
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from sqlalchemy import func
@@ -10,7 +10,6 @@ from config.database import SessionLocal
 from models.budget import Budget
 from models.receipt import Receipt
 from utils.exceptions import ValidationError
-
 
 MONTH_PATTERN = re.compile(r"^\d{4}-\d{2}$")
 VALID_MODES = {"manual", "forecast", "forecast_adjusted"}
@@ -97,7 +96,7 @@ class BudgetService:
 
     def _month_start(self, month: str) -> datetime:
         year, mon = month.split("-")
-        return datetime(int(year), int(mon), 1, tzinfo=timezone.utc)
+        return datetime(int(year), int(mon), 1, tzinfo=UTC)
 
     def _next_month(self, month: str) -> str:
         year, mon = [int(v) for v in month.split("-")]

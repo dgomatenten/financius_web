@@ -3,7 +3,6 @@ from flask import Blueprint, jsonify, request
 from api.envelope import ok
 from services.amortization_service import AmortizationService
 
-
 bp = Blueprint("amortization", __name__)
 service = AmortizationService()
 

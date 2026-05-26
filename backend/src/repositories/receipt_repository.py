@@ -1,6 +1,6 @@
 from datetime import datetime
-from uuid import uuid4
 from typing import Any
+from uuid import uuid4
 
 from config.database import SessionLocal
 from models.master_data import Shop

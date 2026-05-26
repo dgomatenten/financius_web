@@ -8,7 +8,6 @@ from services.category_service import CategoryService
 from services.shop_service import ShopService
 from utils.auth import get_current_user_id
 
-
 bp = Blueprint("master_data", __name__)
 
 

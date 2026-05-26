@@ -20,7 +20,8 @@ class InsightsService:
             {"key": "total_spending", "label": "Total Spending", "value": round(total, 2)},
             {"key": "receipt_count", "label": "Receipt Count", "value": receipt_count},
             {"key": "avg_per_receipt", "label": "Avg Per Receipt", "value": round(avg_per_receipt, 2)},
-            {"key": "mom_change_pct", "label": "MoM Change %", "value": round(float(summary.get("monthOverMonthPct") or 0.0), 2)},
+            {"key": "mom_change_pct", "label": "MoM Change %",
+             "value": round(float(summary.get("monthOverMonthPct") or 0.0), 2)},
             {
                 "key": "top_category",
                 "label": "Top Category",

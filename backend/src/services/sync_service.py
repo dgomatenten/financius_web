@@ -1,15 +1,14 @@
 """Sync service for Android data synchronization"""
 
-from datetime import datetime, timezone
 import logging
-from uuid import uuid4
+from datetime import UTC, datetime
 from typing import Any
+from uuid import uuid4
 
-from repositories.sync_repository import SyncRepository
 from config.database import SessionLocal
-from models.user import User
 from models.sync_event import SyncEvent
-
+from models.user import User
+from repositories.sync_repository import SyncRepository
 
 logger = logging.getLogger(__name__)
 
@@ -35,19 +34,18 @@ class SyncService:
             logger.info("sync started user_id=%s device_id=%s", user_id, device_id)
 
             # Start sync
-            sync_started_at = datetime.now(tz=timezone.utc)
+            sync_started_at = datetime.now(tz=UTC)
 
             # Upsert all data
             accepted_counts = self.sync_repo.upsert_payload(user_id, payload)
 
             # Create sync event record
-            total_accepted = sum(accepted_counts.values())
             sync_event = SyncEvent(
                 id=str(uuid4()),
                 user_id=user_id,
                 device_id=device_id,
                 sync_started_at=sync_started_at,
-                sync_completed_at=datetime.now(tz=timezone.utc),
+                sync_completed_at=datetime.now(tz=UTC),
                 status="success",
                 receipts_count=accepted_counts.get("receipts", 0),
                 line_items_count=accepted_counts.get("lineItems", 0),

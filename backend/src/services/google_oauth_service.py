@@ -9,7 +9,6 @@ from repositories.user_repository import UserRepository
 from services.auth_tokens import issue_access_token, issue_refresh_token
 from utils.exceptions import InvalidCredentialsError, ValidationError
 
-
 GOOGLE_TOKEN_INFO_URL = "https://oauth2.googleapis.com/tokeninfo"
 
 
@@ -35,7 +34,7 @@ class GoogleOAuthService:
         try:
             claims = _fetch_google_claims(id_token)
         except (HTTPError, URLError, TimeoutError, JSONDecodeError):
-            raise ValidationError("Unable to verify Google ID token")
+            raise ValidationError("Unable to verify Google ID token") from None
 
         google_sub = claims.get("sub")
         email = claims.get("email")

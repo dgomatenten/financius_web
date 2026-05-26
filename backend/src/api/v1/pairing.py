@@ -8,7 +8,6 @@ from services.pairing_service import PairingService
 from utils.auth import get_current_user_id
 from utils.exceptions import ValidationError
 
-
 bp = Blueprint("pairing", __name__)
 
 

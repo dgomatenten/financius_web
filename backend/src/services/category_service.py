@@ -1,5 +1,5 @@
-from typing import Any
 from datetime import datetime
+from typing import Any
 from uuid import uuid4
 
 from config.database import SessionLocal

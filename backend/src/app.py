@@ -1,12 +1,12 @@
 from flask import Flask, jsonify, render_template
 from sqlalchemy import text
 
+import models  # noqa: F401 - register all model metadata before create_all
 from api.envelope import ok
 from api.error_handler import register_error_handlers
 from api.v1 import register_v1_routes
 from config.database import Base, engine
 from config.settings import get_settings
-import models  # noqa: F401 - register all model metadata before create_all
 from utils.logging import configure_logging, init_request_context, request_id
 
 

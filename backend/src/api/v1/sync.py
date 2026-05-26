@@ -12,7 +12,6 @@ from services.sync_service import SyncService
 from utils.auth import get_current_user_id
 from utils.exceptions import ValidationError
 
-
 bp = Blueprint("sync", __name__)
 logger = logging.getLogger(__name__)
 

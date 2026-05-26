@@ -1,9 +1,8 @@
 import logging
-from pathlib import Path
 import uuid
+from pathlib import Path
 
-from flask import Flask, Request, g, has_request_context, request
-
+from flask import Flask, g, has_request_context, request
 
 _REQUEST_ID_HEADER = "X-Request-ID"
 

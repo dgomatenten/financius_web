@@ -3,7 +3,6 @@ from sqlalchemy.orm import declarative_base, scoped_session, sessionmaker
 
 from config.settings import get_settings
 
-
 Base = declarative_base()
 settings = get_settings()
 engine = create_engine(settings.database_url, future=True, pool_pre_ping=True)

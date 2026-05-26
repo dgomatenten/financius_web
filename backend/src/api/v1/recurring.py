@@ -3,7 +3,6 @@ from flask import Blueprint, jsonify, request
 from api.envelope import ok
 from services.recurring_service import RecurringService
 
-
 bp = Blueprint("recurring", __name__)
 service = RecurringService()
 

@@ -1,6 +1,17 @@
 from flask import Blueprint
 
-from api.v1 import amortization, analytics, auth, budgets, export, master_data, pairing, receipts, recurring, sync
+from api.v1 import (
+    amortization,
+    analytics,
+    auth,
+    budgets,
+    export,
+    master_data,
+    pairing,
+    receipts,
+    recurring,
+    sync,
+)
 
 
 def register_v1_routes() -> Blueprint:

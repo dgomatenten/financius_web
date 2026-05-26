@@ -2,12 +2,11 @@
 
 import logging
 
-from flask import request
 import jwt
+from flask import request
 
 from config.settings import get_settings
 from utils.exceptions import InvalidTokenError
-
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +45,7 @@ def get_current_user_id() -> str:
                 return user_id
         except Exception:
             pass
-        raise InvalidTokenError()
+        raise InvalidTokenError() from None
     except (jwt.DecodeError, jwt.InvalidTokenError):
         logger.warning("invalid access token decode failure")
-        raise InvalidTokenError()
+        raise InvalidTokenError() from None

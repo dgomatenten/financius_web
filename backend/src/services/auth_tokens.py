@@ -1,13 +1,12 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from hashlib import sha256
+from uuid import uuid4
 
 import jwt
 from werkzeug.security import check_password_hash, generate_password_hash
-from uuid import uuid4
 
 from config.settings import get_settings
 from utils.exceptions import InvalidTokenError
-
 
 SETTINGS = get_settings()
 
@@ -25,12 +24,12 @@ def verify_password(password_hash: str, password: str) -> bool:
 
 
 def issue_access_token(user_id: str) -> str:
-    exp = datetime.now(tz=timezone.utc) + timedelta(hours=1)
+    exp = datetime.now(tz=UTC) + timedelta(hours=1)
     return jwt.encode({"sub": user_id, "exp": exp}, SETTINGS.jwt_secret, algorithm="HS256")
 
 
 def issue_refresh_token(user_id: str) -> str:
-    exp = datetime.now(tz=timezone.utc) + timedelta(days=30)
+    exp = datetime.now(tz=UTC) + timedelta(days=30)
     return jwt.encode(
         {"sub": user_id, "exp": exp, "type": "refresh", "jti": str(uuid4())},
         SETTINGS.jwt_secret,

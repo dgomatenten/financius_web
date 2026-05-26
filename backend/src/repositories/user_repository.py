@@ -1,4 +1,3 @@
-from typing import Optional
 
 from config.database import SessionLocal
 from models.user import RefreshToken, User
@@ -14,8 +13,8 @@ class UserRepository:
     def create_user(
         self,
         email: str,
-        password_hash: Optional[str] = None,
-        google_sub: Optional[str] = None,
+        password_hash: str | None = None,
+        google_sub: str | None = None,
     ) -> User:
         """Create a new user in the database"""
         user = User(
@@ -37,15 +36,15 @@ class UserRepository:
         self.db.refresh(user)
         return user
 
-    def find_by_email(self, email: str) -> Optional[User]:
+    def find_by_email(self, email: str) -> User | None:
         """Find user by email"""
         return self.db.query(User).filter(User.email == email).first()
 
-    def find_by_google_sub(self, google_sub: str) -> Optional[User]:
+    def find_by_google_sub(self, google_sub: str) -> User | None:
         """Find user by Google OAuth subject"""
         return self.db.query(User).filter(User.google_sub == google_sub).first()
 
-    def find_by_id(self, user_id: str) -> Optional[User]:
+    def find_by_id(self, user_id: str) -> User | None:
         """Find user by ID"""
         return self.db.query(User).filter(User.id == user_id).first()
 
@@ -57,7 +56,7 @@ class UserRepository:
         self.db.refresh(token)
         return token
 
-    def find_refresh_token(self, refresh_token: str) -> Optional[RefreshToken]:
+    def find_refresh_token(self, refresh_token: str) -> RefreshToken | None:
         token_hash = hash_token(refresh_token)
         return self.db.query(RefreshToken).filter(RefreshToken.token_hash == token_hash).first()
 

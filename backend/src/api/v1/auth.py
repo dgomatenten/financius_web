@@ -5,7 +5,6 @@ from config.database import SessionLocal
 from services.auth_service import AuthService
 from services.google_oauth_service import GoogleOAuthService
 
-
 bp = Blueprint("auth", __name__)
 
 

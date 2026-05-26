@@ -7,7 +7,6 @@ from services.budget_service import BudgetService
 from utils.auth import get_current_user_id
 from utils.exceptions import ValidationError
 
-
 bp = Blueprint("budgets", __name__)
 
 

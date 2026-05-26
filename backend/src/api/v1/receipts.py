@@ -9,7 +9,6 @@ from services.receipt_bulk_service import ReceiptBulkService
 from services.receipt_service import ReceiptService
 from utils.auth import get_current_user_id
 
-
 bp = Blueprint("receipts", __name__)
 logger = logging.getLogger(__name__)
 
