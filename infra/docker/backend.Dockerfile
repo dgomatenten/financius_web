@@ -6,6 +6,6 @@ COPY backend /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app/src
-ENV FLASK_APP=app:create_app
-EXPOSE 8000
-CMD ["flask", "run", "--host=0.0.0.0", "--port=8000"]
+ENV PORT=10000
+EXPOSE 10000
+CMD gunicorn --bind "0.0.0.0:${PORT}" --workers 2 --timeout 60 "src.app:create_app()"
