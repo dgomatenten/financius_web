@@ -7,5 +7,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app/src
 ENV PORT=10000
+RUN mkdir -p /var/data
 EXPOSE 10000
 CMD gunicorn --bind "0.0.0.0:${PORT}" --workers 2 --timeout 60 "src.app:create_app()"
