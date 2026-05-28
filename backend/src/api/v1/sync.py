@@ -142,6 +142,17 @@ def _normalise_payload(body: dict) -> dict:
             if isinstance(category_obj, dict):
                 r["categoryId"] = category_obj.get("id") or category_obj.get("externalId")
 
+        # Category from line items: Android stores categoryId per line item,
+        # not at receipt level. Use the first (or most common) line item categoryId.
+        if "categoryId" not in r and "categoryExternalId" not in r:
+            line_items = r.get("lineItems") or []
+            for li in line_items:
+                if isinstance(li, dict):
+                    li_cat = li.get("categoryId") or li.get("categoryExternalId")
+                    if li_cat:
+                        r["categoryId"] = li_cat
+                        break
+
         # Embedded shop/tag object: {"shop": {"id": "...", "name": "..."}}
         if "shopId" not in r and "shopExternalId" not in r:
             shop_obj = r.get("shop") or r.get("tag") or r.get("merchant")
@@ -149,6 +160,19 @@ def _normalise_payload(body: dict) -> dict:
                 r["shopId"] = shop_obj.get("id") or shop_obj.get("externalId")
                 if not r.get("shopName"):
                     r["shopName"] = shop_obj.get("name") or shop_obj.get("title")
+
+        # Normalise line item field aliases: qty→quantity, amount→unitPrice
+        normalised_line_items = []
+        for li in r.get("lineItems") or []:
+            if not isinstance(li, dict):
+                continue
+            li = dict(li)
+            if "quantity" not in li and "qty" in li:
+                li["quantity"] = li.pop("qty")
+            if "unitPrice" not in li and "amount" in li:
+                li["unitPrice"] = li.pop("amount")
+            normalised_line_items.append(li)
+        r["lineItems"] = normalised_line_items
 
         normalised_receipts.append(r)
 
@@ -260,10 +284,15 @@ def sync_payload() -> tuple:
     payload_preview = _sync_payload_preview(body)
     logger.info("sync payload preview=%s", json.dumps(payload_preview, ensure_ascii=True))
 
-    # Log top-level keys so we can diagnose unknown field names from new app versions.
+    # Log raw first receipt (all fields) so we can diagnose unknown field names from Android.
     top_keys = sorted(body.keys())
-    first_receipt_keys = sorted(body["receipts"][0].keys()) if body.get("receipts") else []
-    logger.info("sync schema top_keys=%s first_receipt_keys=%s", top_keys, first_receipt_keys)
+    raw_receipts = body.get("receipts") or []
+    first_receipt_raw = raw_receipts[0] if raw_receipts else {}
+    logger.info(
+        "sync schema top_keys=%s first_receipt_raw=%s",
+        top_keys,
+        json.dumps(first_receipt_raw, ensure_ascii=True, default=str),
+    )
 
     logger.info(
         "sync request received user_id=%s device_id=%s items_total=%s",
