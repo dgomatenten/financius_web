@@ -1,28 +1,57 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Financius Web{% endblock %}
+{% block title %}Dashboard — Financius{% endblock %}
 
 {% block content %}
 <section class="card">
-  <h2>Dashboard</h2>
-  <p id="sessionUserText" class="muted"></p>
-  <p class="section-intro">Operational overview for service health, token state, and sync readiness.</p>
-  <div class="grid-2">
+  <div class="dash-header">
+    <div>
+      <h2>Dashboard</h2>
+      <p id="sessionUserText" class="muted"></p>
+    </div>
+    <button id="logoutBtn" class="btn-outline" type="button">Sign out</button>
+  </div>
+
+  <div class="grid-2" style="margin-top: 12px;">
     <article class="panel fade-in-up">
-      <h3>Health</h3>
-      <p class="muted">Validate backend service availability.</p>
+      <div class="panel-icon" aria-hidden="true">🩺</div>
+      <h3>Service Health</h3>
+      <p class="muted">Validate backend availability and response.</p>
       <button id="healthBtn" type="button">Check Health</button>
       <div id="healthOut" class="out"></div>
     </article>
+
     <article class="panel fade-in-up delay-1">
+      <div class="panel-icon" aria-hidden="true">🔄</div>
       <h3>Sync Status</h3>
-      <p class="muted">Inspect authentication and latest sync state.</p>
-      <button id="syncBtn" type="button">Load Sync Status</button>
+      <p class="muted">Inspect authentication and latest device sync state.</p>
+      <button id="syncBtn" type="button">Load Status</button>
       <div id="syncOut" class="out"></div>
     </article>
   </div>
-  <button id="logoutBtn" type="button">Log out</button>
-  <p class="muted">Logout revokes the refresh token on the server and clears browser storage.</p>
+
+  <div class="quick-links">
+    <a href="/receipts" class="quick-link">
+      <span aria-hidden="true">🧾</span>
+      <strong>Receipts</strong>
+      <span class="muted">View &amp; filter</span>
+    </a>
+    <a href="/analytics/dashboard" class="quick-link">
+      <span aria-hidden="true">📈</span>
+      <strong>Analytics</strong>
+      <span class="muted">Spending trends</span>
+    </a>
+    <a href="/budgets/overview" class="quick-link">
+      <span aria-hidden="true">📊</span>
+      <strong>Budgets</strong>
+      <span class="muted">Overview &amp; settings</span>
+    </a>
+    <a href="/sync/pairing" class="quick-link">
+      <span aria-hidden="true">📱</span>
+      <strong>Pair Device</strong>
+      <span class="muted">Android pairing</span>
+    </a>
+  </div>
 </section>
 <script src="/static/js/session.js" defer></script>
 <script src="/static/js/dashboard.js" defer></script>
