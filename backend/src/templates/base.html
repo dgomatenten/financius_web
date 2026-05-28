@@ -12,22 +12,34 @@
   <body>
     <main class="shell">
       <header class="hero">
-        <h1>Financius Web Companion</h1>
+        <div class="hero-brand">
+          <span class="hero-logo" aria-hidden="true">💰</span>
+          <h1>Financius</h1>
+        </div>
         <nav class="top-nav">
-          <a href="/" {% if request.path == '/' %}aria-current="page"{% endif %}>Home</a>
-          <a href="/login" {% if request.path == '/login' %}aria-current="page"{% endif %}>Login</a>
-          <a href="/register" {% if request.path == '/register' %}aria-current="page"{% endif %}>Register</a>
-          <a href="/dashboard" {% if request.path == '/dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
-          <a href="/receipts" {% if request.path == '/receipts' %}aria-current="page"{% endif %}>Receipts</a>
-          <a href="/master-data/categories" {% if request.path.startswith('/master-data/categories') %}aria-current="page"{% endif %}>Categories</a>
-          <a href="/master-data/shops" {% if request.path.startswith('/master-data/shops') %}aria-current="page"{% endif %}>Shops</a>
-          <a href="/master-data/cards" {% if request.path.startswith('/master-data/cards') %}aria-current="page"{% endif %}>Cards</a>
-          <a href="/budgets/settings" {% if request.path.startswith('/budgets/settings') %}aria-current="page"{% endif %}>Budgets</a>
-          <a href="/budgets/overview" {% if request.path.startswith('/budgets/overview') %}aria-current="page"{% endif %}>Bud. Overview</a>
-          <a href="/analytics/dashboard" {% if request.path.startswith('/analytics') %}aria-current="page"{% endif %}>Analytics</a>
-          <a href="/sync/status" {% if request.path.startswith('/sync/status') %}aria-current="page"{% endif %}>Sync</a>
-          <a href="/sync/pairing" {% if request.path.startswith('/sync/pairing') %}aria-current="page"{% endif %}>Pairing</a>
-          <button id="densityToggleBtn" class="nav-toggle" type="button" aria-pressed="false">Compact</button>
+          <a href="/dashboard" {% if request.path == '/dashboard' %}aria-current="page"{% endif %}>
+            <span aria-hidden="true">🏠</span> Dashboard
+          </a>
+          <a href="/receipts" {% if request.path.startswith('/receipts') %}aria-current="page"{% endif %}>
+            <span aria-hidden="true">🧾</span> Receipts
+          </a>
+          <a href="/budgets/overview" {% if request.path.startswith('/budgets') %}aria-current="page"{% endif %}>
+            <span aria-hidden="true">📊</span> Budgets
+          </a>
+          <a href="/analytics/dashboard" {% if request.path.startswith('/analytics') %}aria-current="page"{% endif %}>
+            <span aria-hidden="true">📈</span> Analytics
+          </a>
+          <div class="nav-group">
+            <span class="nav-group-label">Data</span>
+            <a href="/master-data/categories" {% if request.path.startswith('/master-data/categories') %}aria-current="page"{% endif %}>Categories</a>
+            <a href="/master-data/shops" {% if request.path.startswith('/master-data/shops') %}aria-current="page"{% endif %}>Shops</a>
+            <a href="/master-data/cards" {% if request.path.startswith('/master-data/cards') %}aria-current="page"{% endif %}>Cards</a>
+          </div>
+          <a href="/sync/status" {% if request.path.startswith('/sync') %}aria-current="page"{% endif %}>
+            <span aria-hidden="true">🔄</span> Sync
+          </a>
+          <a href="/login" class="nav-auth" {% if request.path == '/login' %}aria-current="page"{% endif %}>Sign in</a>
+          <button id="densityToggleBtn" class="nav-toggle" type="button" aria-pressed="false">⊡ Compact</button>
         </nav>
       </header>
 
