@@ -1,24 +1,44 @@
-{% extends "base.html" %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create account — Financius</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/css/app.css" />
+    <link rel="stylesheet" href="/static/css/auth.css" />
+  </head>
+  <body class="auth-page">
+    <main class="auth-shell">
+      <div class="auth-card">
+        <div class="auth-brand">
+          <span class="auth-logo" aria-hidden="true">💰</span>
+          <h1 class="auth-title">Financius</h1>
+          <p class="auth-subtitle">Create your account</p>
+        </div>
 
-{% block title %}Register - Financius Web{% endblock %}
+        <form id="registerForm" class="auth-form">
+          <label class="field-label">
+            Email
+            <input id="registerEmail" type="email" placeholder="you@example.com" required autocomplete="email" />
+          </label>
+          <label class="field-label">
+            Password
+            <input id="registerPassword" type="password" placeholder="min 6 characters" minlength="6" required autocomplete="new-password" />
+          </label>
+          <button type="submit" class="btn-primary">Create account</button>
+        </form>
 
-{% block content %}
-<section class="card">
-  <h2>Create account</h2>
-  <form id="registerForm" class="stack-form">
-    <label>
-      Email
-      <input id="registerEmail" type="email" required />
-    </label>
-    <label>
-      Password
-      <input id="registerPassword" type="password" minlength="6" required />
-    </label>
-    <button type="submit">Register</button>
-  </form>
-  <p class="muted">Already have an account? <a href="/login">Sign in</a>.</p>
-  <pre id="registerOut" class="out"></pre>
-</section>
-<script src="/static/js/session.js" defer></script>
-<script src="/static/js/auth.js" defer></script>
-{% endblock %}
+        <p class="auth-footer">
+          Already have an account? <a href="/login">Sign in</a>
+        </p>
+
+        <pre id="registerOut" class="out"></pre>
+      </div>
+    </main>
+    <script src="/static/js/session.js" defer></script>
+    <script src="/static/js/auth.js" defer></script>
+  </body>
+</html>
