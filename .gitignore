@@ -33,3 +33,4 @@ data/
 Thumbs.db
 *.tmp
 *.swp
+.playwright-mcp/
