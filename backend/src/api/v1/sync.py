@@ -72,6 +72,132 @@ def _sync_payload_preview(body: dict) -> dict:
     }
 
 
+def _normalise_payload(body: dict) -> dict:
+    """
+    Normalise Financius Android field-name aliases into canonical web-side names.
+
+    Original Financius Android app uses:
+      transactions  → receipts
+      accounts      → cards
+      tags          → shops (some variants)
+      transaction.accountId / transaction.account.id  → paymentCardId
+      transaction.date (epoch ms) → receiptDate (ISO string)
+      transaction.amount (negative cents) → total (positive float)
+    """
+    result = dict(body)
+
+    # Top-level collection aliases
+    if "transactions" in result and "receipts" not in result:
+        result["receipts"] = result.pop("transactions")
+    if "accounts" in result and "cards" not in result:
+        result["cards"] = result.pop("accounts")
+    if "tags" in result and "shops" not in result:
+        result["tags"] = result.pop("shops")
+
+    # Normalise per-receipt (transaction) field aliases
+    normalised_receipts = []
+    for r in result.get("receipts", []) or []:
+        if not isinstance(r, dict):
+            continue
+        r = dict(r)
+
+        # id → externalId
+        if "externalId" not in r and "id" in r:
+            r["externalId"] = r["id"]
+
+        # date (epoch ms int) → receiptDate (ISO string)
+        if "receiptDate" not in r and "date" in r:
+            raw_date = r["date"]
+            if isinstance(raw_date, (int, float)):
+                from datetime import UTC, datetime
+                # Epoch milliseconds (Android stores ms)
+                r["receiptDate"] = datetime.fromtimestamp(raw_date / 1000, tz=UTC).isoformat()
+            else:
+                r["receiptDate"] = raw_date
+
+        # amount (negative cents, expense) → total (positive float dollars)
+        if "total" not in r and "totalAmount" not in r and "amount" in r:
+            raw_amount = r.get("amount", 0)
+            if isinstance(raw_amount, (int, float)):
+                r["total"] = abs(raw_amount) / 100.0  # cents → dollars
+            else:
+                r["total"] = raw_amount
+
+        # accountId → paymentCardId (Financius calls card an "account")
+        if "paymentCardId" not in r and "paymentCardExternalId" not in r:
+            account_id = r.get("accountId") or r.get("account_id")
+            if not account_id:
+                # Embedded account object: {"account": {"id": "...", "title": "..."}}
+                account_obj = r.get("account") or r.get("paymentCard")
+                if isinstance(account_obj, dict):
+                    account_id = account_obj.get("id") or account_obj.get("externalId")
+                    if not r.get("paymentCardId"):
+                        r["paymentCardId"] = account_id
+            else:
+                r["paymentCardId"] = account_id
+
+        # Embedded category object: {"category": {"id": "...", "title": "..."}}
+        if "categoryId" not in r and "categoryExternalId" not in r:
+            category_obj = r.get("category")
+            if isinstance(category_obj, dict):
+                r["categoryId"] = category_obj.get("id") or category_obj.get("externalId")
+
+        # Embedded shop/tag object: {"shop": {"id": "...", "name": "..."}}
+        if "shopId" not in r and "shopExternalId" not in r:
+            shop_obj = r.get("shop") or r.get("tag") or r.get("merchant")
+            if isinstance(shop_obj, dict):
+                r["shopId"] = shop_obj.get("id") or shop_obj.get("externalId")
+                if not r.get("shopName"):
+                    r["shopName"] = shop_obj.get("name") or shop_obj.get("title")
+
+        normalised_receipts.append(r)
+
+    result["receipts"] = normalised_receipts
+
+    # Normalise per-account (card) aliases
+    normalised_cards = []
+    for c in result.get("cards", []) or []:
+        if not isinstance(c, dict):
+            continue
+        c = dict(c)
+        if "externalId" not in c and "id" in c:
+            c["externalId"] = c["id"]
+        if "nickname" not in c:
+            c["nickname"] = c.get("title") or c.get("name") or ""
+        if "cardType" not in c:
+            c["cardType"] = c.get("type") or "credit"
+        normalised_cards.append(c)
+    result["cards"] = normalised_cards
+
+    # Normalise per-category aliases
+    normalised_categories = []
+    for cat in result.get("categories", []) or []:
+        if not isinstance(cat, dict):
+            continue
+        cat = dict(cat)
+        if "externalId" not in cat and "id" in cat:
+            cat["externalId"] = cat["id"]
+        if "name" not in cat:
+            cat["name"] = cat.get("title") or ""
+        normalised_categories.append(cat)
+    result["categories"] = normalised_categories
+
+    # Normalise per-shop/tag aliases
+    normalised_shops = []
+    for s in result.get("shops", []) or []:
+        if not isinstance(s, dict):
+            continue
+        s = dict(s)
+        if "externalId" not in s and "id" in s:
+            s["externalId"] = s["id"]
+        if "name" not in s:
+            s["name"] = s.get("title") or ""
+        normalised_shops.append(s)
+    result["shops"] = normalised_shops
+
+    return result
+
+
 @bp.post("")
 def sync_payload() -> tuple:
     """
@@ -108,6 +234,10 @@ def sync_payload() -> tuple:
     if not isinstance(body, dict):
         raise ValidationError("Request body must be a JSON object")
 
+    # Normalise Financius Android field-name aliases so both the original
+    # Financius app and future app variants work without changes.
+    body = _normalise_payload(body)
+
     for key in ("receipts", "categories", "shops", "cards"):
         value = body.get(key, [])
         if value is None:
@@ -122,13 +252,18 @@ def sync_payload() -> tuple:
             f"Max {settings.sync_max_items_per_request} items per request. "
             "Upload in batches."
         )
-    
+
     device_id = body.get("deviceId")
     if not device_id:
         raise ValidationError("deviceId is required")
 
     payload_preview = _sync_payload_preview(body)
     logger.info("sync payload preview=%s", json.dumps(payload_preview, ensure_ascii=True))
+
+    # Log top-level keys so we can diagnose unknown field names from new app versions.
+    top_keys = sorted(body.keys())
+    first_receipt_keys = sorted(body["receipts"][0].keys()) if body.get("receipts") else []
+    logger.info("sync schema top_keys=%s first_receipt_keys=%s", top_keys, first_receipt_keys)
 
     logger.info(
         "sync request received user_id=%s device_id=%s items_total=%s",

@@ -1,5 +1,6 @@
 """Repository for synced data operations"""
 
+import logging
 from datetime import UTC, datetime
 from typing import Any
 from uuid import uuid4
@@ -8,6 +9,8 @@ from config.database import SessionLocal
 from models.category import Category
 from models.master_data import PaymentCard, Shop
 from models.receipt import Receipt, ReceiptLineItem
+
+logger = logging.getLogger(__name__)
 
 
 class SyncRepository:
@@ -200,6 +203,19 @@ class SyncRepository:
             )
             if shop:
                 return shop.id
+            # external_id present but shop not in DB yet — auto-create a stub
+            # so the receipt isn't orphaned (common when Android sends receipts
+            # without a separate shops[] array in the same payload).
+            shop_name = receipt_data.get("shopName") or receipt_data.get("merchant") or shop_external_id
+            logger.info(
+                "auto-creating stub shop external_id=%s name=%s user_id=%s", shop_external_id, shop_name, user_id
+            )
+            shop = Shop(
+                id=str(uuid4()), user_id=user_id, external_id=str(shop_external_id), name=str(shop_name)
+            )
+            self.db.add(shop)
+            self.db.flush()
+            return shop.id
 
         shop_name = receipt_data.get("shopName") or receipt_data.get("merchant")
         if shop_name:
@@ -210,6 +226,12 @@ class SyncRepository:
             )
             if shop:
                 return shop.id
+            # Auto-create by name when no external_id is available.
+            logger.info("auto-creating stub shop by name=%s user_id=%s", shop_name, user_id)
+            shop = Shop(id=str(uuid4()), user_id=user_id, name=str(shop_name))
+            self.db.add(shop)
+            self.db.flush()
+            return shop.id
 
         return None
 
@@ -227,6 +249,18 @@ class SyncRepository:
             )
             if category:
                 return category.id
+            # Auto-create stub category so the receipt isn't orphaned.
+            cat_name = receipt_data.get("categoryName") or category_external_id
+            logger.info(
+                "auto-creating stub category external_id=%s name=%s user_id=%s",
+                category_external_id, cat_name, user_id,
+            )
+            category = Category(
+                id=str(uuid4()), user_id=user_id, external_id=str(category_external_id), name=str(cat_name)
+            )
+            self.db.add(category)
+            self.db.flush()
+            return category.id
 
         return None
 
@@ -249,6 +283,19 @@ class SyncRepository:
             )
             if card:
                 return card.id
+            # Auto-create stub card so the receipt isn't orphaned.
+            card_name = receipt_data.get("paymentCardName") or receipt_data.get("cardName") or card_external_id
+            logger.info(
+                "auto-creating stub card external_id=%s nickname=%s user_id=%s",
+                card_external_id, card_name, user_id,
+            )
+            card = PaymentCard(
+                id=str(uuid4()), user_id=user_id, external_id=str(card_external_id),
+                nickname=str(card_name), card_type="credit",
+            )
+            self.db.add(card)
+            self.db.flush()
+            return card.id
 
         return None
 
