@@ -15,6 +15,7 @@ class Settings:
     google_client_secret: str
     allowed_origins: str
     qr_pairing_token_ttl_seconds: int
+    access_token_ttl_seconds: int
     api_base_url: str
     backend_port: int
     flask_env: str
@@ -33,6 +34,7 @@ def get_settings() -> Settings:
         google_client_secret=os.getenv("GOOGLE_CLIENT_SECRET", "replace-me"),
         allowed_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:8000"),
         qr_pairing_token_ttl_seconds=int(os.getenv("QR_PAIRING_TOKEN_TTL_SECONDS", "300")),
+        access_token_ttl_seconds=int(os.getenv("ACCESS_TOKEN_TTL_SECONDS", "3600")),
         api_base_url=os.getenv("API_BASE_URL", "http://localhost:8000"),
         backend_port=int(os.getenv("BACKEND_PORT", "8000")),
         flask_env=os.getenv("FLASK_ENV", "development"),

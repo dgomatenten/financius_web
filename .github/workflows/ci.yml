@@ -23,16 +23,31 @@ jobs:
         run: pip install ruff
 
       - name: Ruff check
-        run: ruff check backend/src backend/tests
+        run: ruff check backend/accounts backend/ledger backend/financius_web backend/tests/dj
 
   test:
     name: Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: financius_test
+          POSTGRES_USER: financius
+          POSTGRES_PASSWORD: financius_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     env:
-      PYTHONPATH: backend/src
-      DATABASE_URL: sqlite:///./test.db
-      SECRET_KEY: ci-test-secret
-      FLASK_ENV: testing
+      DJANGO_SETTINGS_MODULE: financius_web.settings
+      DJANGO_DATABASE_URL: postgres://financius:financius_test@localhost:5432/financius_test
+      JWT_SECRET: ci-jwt-secret-replace-in-prod
+      SECRET_KEY: ci-django-secret-replace-in-prod
+      GOOGLE_CLIENT_ID: ci-placeholder
     steps:
       - uses: actions/checkout@v4
 
@@ -43,10 +58,15 @@ jobs:
           cache-dependency-path: backend/requirements.txt
 
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt pytest
+        run: pip install -r backend/requirements.txt
+
+      - name: Run migrations
+        working-directory: backend
+        run: python manage.py migrate --noinput
 
       - name: Run tests
-        run: pytest backend/tests -q
+        working-directory: backend
+        run: pytest tests/dj -q
 
   docker:
     name: Docker build

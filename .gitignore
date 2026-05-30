@@ -13,6 +13,7 @@ venv/
 dist/
 build/
 *.egg-info/
+backend/staticfiles/
 
 # Environment and local data
 .env
@@ -34,3 +35,12 @@ Thumbs.db
 *.tmp
 *.swp
 .playwright-mcp/
+.gstack/
+
+# Claude Code — local-only overrides (settings.json is committed; .local is not)
+.claude/settings.local.json
+.claude/.env
+.run/
+
+# MCP config contains DB credentials — local only
+.mcp.json

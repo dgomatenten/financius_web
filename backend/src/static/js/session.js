@@ -23,6 +23,7 @@ function getSessionUser() {
   }
   return {
     id: payload.sub || null,
+    email: payload.email || null,
     issuedAt: payload.iat || null,
     expiresAt: payload.exp || null,
   };
@@ -38,7 +39,7 @@ function setSessionUserText(elementId) {
     el.innerHTML = 'Not signed in — <a href="/">Sign in</a>';
     return;
   }
-  el.textContent = `Signed in as: ${user.id}`;
+  el.textContent = `Signed in as: ${user.email || user.id}`;
 }
 
 function getRefreshToken() {

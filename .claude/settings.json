@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(python3 *)",
+      "Bash(pip3 *)",
+      "Bash(pip *)",
+      "Bash(ruff *)",
+      "Bash(pytest *)",
+      "Bash(docker *)",
+      "Bash(docker compose *)",
+      "Bash(./scripts/run_services.sh *)",
+      "Bash(./scripts/launch.sh *)",
+      "Bash(flask *)",
+      "Bash(gunicorn *)",
+      "Bash(manage.py *)",
+      "Bash(python3 manage.py *)",
+      "Bash(adb *)",
+      "Bash(flutter *)",
+      "Bash(find . *)",
+      "Bash(grep *)",
+      "Bash(tail *)",
+      "Bash(cat *)",
+      "Bash(ls *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(rm -rf /*)"
+    ]
+  },
+  "env": {
+    "PYTHONPATH": "backend/src",
+    "FLASK_APP": "backend/src/app.py",
+    "FLASK_ENV": "development"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/dgoma/app_dev/financius_web && ruff check backend/src/ --quiet --no-fix 2>/dev/null | head -20 || true"
+          }
+        ]
+      }
+    ]
+  }
+}

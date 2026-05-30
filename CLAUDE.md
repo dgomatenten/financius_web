@@ -19,9 +19,10 @@ REST endpoints MUST be published under `/api/v1`. Every response MUST use the en
 Android Retrofit clients MUST trigger explicit versioning and be documented before release.
 
 ### IV. Data Layer Stability
-Backend MUST use SQLAlchemy ORM with SQLite as the current default. Schema design MUST
-preserve forward migration to PostgreSQL without rewriting business logic. All SQL MUST
-flow through ORM models or sanctioned query abstractions.
+Backend is migrating from Flask/SQLAlchemy/SQLite to Django/PostgreSQL. New code MUST
+target Django ORM models. PostgreSQL is the target database; the Flask/SQLite stack is
+legacy. All SQL MUST flow through ORM models or sanctioned query abstractions. Django
+migrations are the single source of truth for schema changes.
 
 ### V. Python Quality
 Backend MUST follow PEP 8 with type hints on all functions. Dependencies MUST be minimal
@@ -30,7 +31,7 @@ unexpected exceptions to safe error responses within the standard envelope.
 
 ## Technology Standards
 
-- **Backend:** Python Flask, SQLAlchemy, SQLite → PostgreSQL migration path
+- **Backend:** Django + Django REST Framework, PostgreSQL (migrating from Flask/SQLAlchemy/SQLite)
 - **Frontend:** Minimal HTML/JS (`app.css` + vanilla JS); no unnecessary frameworks
 - **API consumers:** Android Retrofit clients and web clients share identical contracts
 - **Docker:** Images MUST define deterministic builds with explicit entrypoints
@@ -43,14 +44,15 @@ unexpected exceptions to safe error responses within the standard envelope.
 - Prefer migration-safe patterns — no AWS SDK lock-in where avoidable
 - Flag any API response that breaks the `{ data, error, meta }` envelope
 
-## Flask Dev Server Note
+## Dev Server Notes
 
-Flask runs via `nohup` (not dev mode) and does **not** hot-reload templates or static
-files. After any template or JS change, restart with:
-
+**Flask (legacy):** Does not hot-reload. After any template or static file change:
 ```bash
 ./scripts/run_services.sh cleanup && ./scripts/run_services.sh start flask
 ```
+
+**Django (new):** Use `python3 manage.py runserver` during development. After model
+changes always run `python3 manage.py makemigrations && python3 manage.py migrate`.
 
 ## Skill Routing
 

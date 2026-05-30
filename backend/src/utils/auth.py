@@ -29,22 +29,7 @@ def get_current_user_id() -> str:
             raise InvalidTokenError()
         return user_id
     except jwt.ExpiredSignatureError:
-        # Compatibility fallback for clients that fail to swap to refreshed
-        # access tokens. Accept expired token subject to avoid sync lockout.
-        try:
-            settings = get_settings()
-            payload = jwt.decode(
-                token,
-                settings.jwt_secret,
-                algorithms=["HS256"],
-                options={"verify_exp": False},
-            )
-            user_id = payload.get("sub")
-            if user_id:
-                logger.warning("using expired access token compatibility path for sub=%s", user_id)
-                return user_id
-        except Exception:
-            pass
+        logger.warning("expired access token rejected — client must refresh")
         raise InvalidTokenError() from None
     except (jwt.DecodeError, jwt.InvalidTokenError):
         logger.warning("invalid access token decode failure")

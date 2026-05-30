@@ -1,3 +1,4 @@
+{% load path_tags %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -17,28 +18,28 @@
           <h1>Financius</h1>
         </div>
         <nav class="top-nav">
-          <a href="/dashboard" {% if request.path == '/dashboard' %}aria-current="page"{% endif %}>
+          <a href="/dashboard" {% if request.path == "/dashboard" %}aria-current="page"{% endif %}>
             <span aria-hidden="true">🏠</span> Dashboard
           </a>
-          <a href="/receipts" {% if request.path.startswith('/receipts') %}aria-current="page"{% endif %}>
+          <a href="/receipts" {% if request.path|startswith:"/receipts" %}aria-current="page"{% endif %}>
             <span aria-hidden="true">🧾</span> Receipts
           </a>
-          <a href="/budgets/overview" {% if request.path.startswith('/budgets') %}aria-current="page"{% endif %}>
+          <a href="/budgets/overview" {% if request.path|startswith:"/budgets" %}aria-current="page"{% endif %}>
             <span aria-hidden="true">📊</span> Budgets
           </a>
-          <a href="/analytics/dashboard" {% if request.path.startswith('/analytics') %}aria-current="page"{% endif %}>
+          <a href="/analytics/dashboard" {% if request.path|startswith:"/analytics" %}aria-current="page"{% endif %}>
             <span aria-hidden="true">📈</span> Analytics
           </a>
           <div class="nav-group">
             <span class="nav-group-label">Data</span>
-            <a href="/master-data/categories" {% if request.path.startswith('/master-data/categories') %}aria-current="page"{% endif %}>Categories</a>
-            <a href="/master-data/shops" {% if request.path.startswith('/master-data/shops') %}aria-current="page"{% endif %}>Shops</a>
-            <a href="/master-data/cards" {% if request.path.startswith('/master-data/cards') %}aria-current="page"{% endif %}>Cards</a>
+            <a href="/master-data/categories" {% if request.path|startswith:"/master-data/categories" %}aria-current="page"{% endif %}>Categories</a>
+            <a href="/master-data/shops" {% if request.path|startswith:"/master-data/shops" %}aria-current="page"{% endif %}>Shops</a>
+            <a href="/master-data/cards" {% if request.path|startswith:"/master-data/cards" %}aria-current="page"{% endif %}>Cards</a>
           </div>
-          <a href="/sync/status" {% if request.path.startswith('/sync') %}aria-current="page"{% endif %}>
+          <a href="/sync/status" {% if request.path|startswith:"/sync" %}aria-current="page"{% endif %}>
             <span aria-hidden="true">🔄</span> Sync
           </a>
-          <a href="/login" class="nav-auth" {% if request.path == '/login' %}aria-current="page"{% endif %}>Sign in</a>
+          <a href="/login" class="nav-auth" {% if request.path == "/login" %}aria-current="page"{% endif %}>Sign in</a>
           <button id="densityToggleBtn" class="nav-toggle" type="button" aria-pressed="false">⊡ Compact</button>
         </nav>
       </header>

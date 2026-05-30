@@ -284,7 +284,7 @@ def sync_payload() -> tuple:
     payload_preview = _sync_payload_preview(body)
     logger.info("sync payload preview=%s", json.dumps(payload_preview, ensure_ascii=True))
 
-    # Log raw first receipt (all fields) so we can diagnose unknown field names from Android.
+    # Log raw first receipt and scan all receipts for unknown fields (shop/card discovery).
     top_keys = sorted(body.keys())
     raw_receipts = body.get("receipts") or []
     first_receipt_raw = raw_receipts[0] if raw_receipts else {}
@@ -293,6 +293,28 @@ def sync_payload() -> tuple:
         top_keys,
         json.dumps(first_receipt_raw, ensure_ascii=True, default=str),
     )
+    _known_receipt_keys = {
+        "externalId", "id", "date", "receiptDate", "currency", "total", "totalAmount",
+        "amount", "lineItems", "categoryId", "categoryExternalId", "shopId",
+        "shopExternalId", "shopName", "merchant", "paymentCardId", "paymentCardExternalId",
+        "cardId", "cardExternalId", "accountId", "note", "subtotal", "tax",
+    }
+    unknown_keys: set[str] = set()
+    for r in raw_receipts[:50]:
+        if isinstance(r, dict):
+            unknown_keys.update(k for k in r if k not in _known_receipt_keys)
+    if unknown_keys:
+        sample_with_unknown = next(
+            (r for r in raw_receipts[:50] if isinstance(r, dict) and unknown_keys & r.keys()), {}
+        )
+        logger.info(
+            "sync unknown_receipt_keys=%s sample=%s",
+            sorted(unknown_keys),
+            json.dumps(
+                {k: v for k, v in sample_with_unknown.items() if k in unknown_keys},
+                ensure_ascii=True, default=str,
+            ),
+        )
 
     logger.info(
         "sync request received user_id=%s device_id=%s items_total=%s",

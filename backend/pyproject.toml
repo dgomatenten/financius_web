@@ -5,7 +5,9 @@ build-backend = "setuptools.build_meta"
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = "-q"
-testpaths = ["tests"]
+testpaths = ["tests/dj"]
+pythonpath = ["src", "."]
+DJANGO_SETTINGS_MODULE = "financius_web.settings"
 
 [tool.black]
 line-length = 120

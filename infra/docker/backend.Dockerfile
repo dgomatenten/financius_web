@@ -3,10 +3,12 @@ WORKDIR /app
 COPY backend/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY backend /app
+COPY infra/docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app/src
+ENV DJANGO_SETTINGS_MODULE=financius_web.settings
 ENV PORT=10000
 RUN mkdir -p /var/data
 EXPOSE 10000
-CMD gunicorn --bind "0.0.0.0:${PORT}" --workers 2 --timeout 60 "src.app:create_app()"
+ENTRYPOINT ["/entrypoint.sh"]
