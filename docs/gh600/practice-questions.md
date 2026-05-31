@@ -4,6 +4,12 @@
 
 Use this question bank after reading the domain notes and companion references.
 
+If you are studying through GitHub Copilot instead of Claude Code, translate the config terms as you go:
+- `CLAUDE.md` maps conceptually to `copilot-instructions.md`
+- `.claude/commands/` maps to reusable prompt or task-entry files
+- `.claude/skills/` maps to specialized prompt or agent customizations
+- `.claude/settings.json` maps to tool and agent configuration controls
+
 Recommended loop:
 1. answer one domain section without looking at the notes
 2. check the answer key and rationale
@@ -18,7 +24,7 @@ The questions are intentionally weighted toward scenario reasoning instead of pu
 
 ### Questions
 
-1. Why is `CLAUDE.md` a Domain 1 artifact rather than just a convenience file for prompting?
+1. Why is `CLAUDE.md` a Domain 1 artifact rather than just a convenience file for prompting? If you are thinking in Copilot terms, answer the same question for `copilot-instructions.md`.
 
 2. In this repo, what is the clearest example of a validation control plane, and why does it belong in the architecture discussion?
 
@@ -36,7 +42,7 @@ D. Execution can define policy as it goes if the final tests pass.
 
 ### Answer Key And Rationale
 
-1. `CLAUDE.md` is a system-of-record artifact because it captures architectural principles, operating constraints, and task routing outside the code being changed. GH-600 cares about inspectable governance, not only model behavior.
+1. `CLAUDE.md` is a system-of-record artifact because it captures architectural principles, operating constraints, and task routing outside the code being changed. GH-600 cares about inspectable governance, not only model behavior. The same reasoning applies if the file is named `copilot-instructions.md`.
 
 2. `.github/workflows/ci.yml` is the clearest validation control plane because it stages lint, test, docker build, and deploy gating in an ordered pipeline. That makes the architecture auditable rather than implicit.
 
@@ -228,6 +234,8 @@ D. Tune prompts and tools together until the output looks right.
 
 5. A workflow attempts a production-adjacent action without approval. What failure class is primary, and why?
 
+6. A repo uses `copilot-instructions.md` instead of `CLAUDE.md`, plus prompt files and tool configuration in other Copilot surfaces. What should you preserve when translating the GH-600 architecture concepts from this pack?
+
 ### Answer Key And Rationale
 
 1. Correct answer: B. It combines minimum viable tool capability, local control-path identification, narrow validation, and disciplined scope growth.
@@ -239,6 +247,8 @@ D. Tune prompts and tools together until the output looks right.
 4. Because it is simultaneously a continuity artifact for execution state, an evaluation invariant for contract testing, and an accountability mechanism for predictable error behavior.
 
 5. Policy or permission failure. The workflow crossed an approval boundary, so the primary problem is governance, not ordinary command failure.
+
+6. Preserve the architectural role, not the vendor-specific filename. You still need a shared instruction layer, reusable task-entry surfaces, and a tool-governance layer. GH-600 is testing those control surfaces, not whether one product uses `CLAUDE.md` versus `copilot-instructions.md`.
 
 ---
 

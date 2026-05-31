@@ -26,6 +26,24 @@ You should be able to explain:
 
 ## Repo Mapping
 
+## Claude To Copilot Configuration Map
+
+This repo uses Claude-oriented configuration names, but the same architectural ideas transfer directly to GitHub Copilot.
+
+| In this repo | Closest Copilot equivalent | Architectural role |
+|---|---|---|
+| `CLAUDE.md` | `copilot-instructions.md` | project-wide instructions and constraints |
+| `.claude/CLAUDE.md` | additional repo or folder-scoped instruction files | narrower shared guidance |
+| `.claude/commands/*.md` | reusable prompt files | standardized task entry points |
+| `.claude/skills/.../SKILL.md` | agent or prompt customizations | specialized workflows with stronger routing |
+| `.claude/settings.json` | Copilot tool and agent configuration | permission and behavior controls |
+
+Why this matters for GH-600:
+- the exam is testing architecture patterns, not allegiance to one product's filenames
+- if you can identify the instruction layer, execution layer, and control layer in one system, you should be able to map them into another
+
+## Repo Mapping
+
 ### `CLAUDE.md`
 
 This is the strongest Domain 1 anchor in the repo.
@@ -37,6 +55,8 @@ What it teaches:
 - policy exists outside the code that the workflow mutates
 
 The most important GH-600 lesson here is that architecture rules must be inspectable by humans, not only inferred from agent behavior after the fact.
+
+If you are translating this into Copilot terms, read `CLAUDE.md` as the role that `copilot-instructions.md` would play: always-loaded shared guidance for the repository.
 
 ### `.claude/commands/django.md` and `.claude/commands/django-new.md`
 
@@ -100,6 +120,8 @@ A stronger GH-600 reading is:
 4. it creates a planning boundary between what should happen and how that work is later executed
 
 This matters because exam questions often test whether you recognize governance artifacts as part of architecture rather than mere documentation.
+
+The same reasoning applies if the file is named `copilot-instructions.md` instead. The filename can change across tools; the system-of-record role should not.
 
 ---
 

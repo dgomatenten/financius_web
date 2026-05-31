@@ -26,6 +26,20 @@ Study each domain in the same order:
 
 If you are short on time, start with Domain 2, Domain 4, and Domain 5. Those are the highest-value sections currently implemented in detail.
 
+## Claude To Copilot Translation
+
+Most repo artifacts in this pack are named for Claude Code because that is the current project setup. If you are studying through GitHub Copilot, use this translation table while reading:
+
+| Claude-oriented artifact | Closest GitHub Copilot equivalent | How to think about it |
+|---|---|---|
+| `CLAUDE.md` | `copilot-instructions.md` | always-loaded project instructions and engineering rules |
+| `.claude/CLAUDE.md` | repo or folder-scoped Copilot instruction files | project-scoped agent guidance |
+| `.claude/commands/*.md` | prompt files or reusable chat prompts | repeatable task entry points |
+| `.claude/skills/.../SKILL.md` | specialized Copilot prompt or agent customization files | reusable domain behavior with constraints |
+| `.claude/settings.json` | Copilot chat/tool configuration and agent restrictions | tool permissions, safety boundaries, and execution defaults |
+
+This is a conceptual map, not a strict file-for-file migration guide. The exam-relevant idea is the role each artifact plays: instruction layer, task-routing layer, and tool-governance layer.
+
 ---
 
 ## GH-600 Skills At A Glance

@@ -27,6 +27,18 @@ That pack includes:
 
 This means the GH-600 path no longer depends on the older exam-roadmap files as its primary structure.
 
+## If You Are Using GitHub Copilot Instead Of Claude Code
+
+Some of the study materials use Claude-specific file names because this repo is configured that way today.
+
+Use this quick translation while reading:
+- `CLAUDE.md` maps conceptually to `copilot-instructions.md`
+- `.claude/commands/` maps to reusable prompt or task-entry files
+- `.claude/skills/` maps to specialized agent or prompt customizations
+- `.claude/settings.json` maps to Copilot-side tool and agent configuration
+
+The study goal is to understand the control surfaces, not memorize a vendor-specific filename.
+
 ---
 
 ## Recommended Starting Point

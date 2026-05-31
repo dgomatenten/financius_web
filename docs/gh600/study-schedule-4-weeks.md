@@ -12,6 +12,12 @@ Each day has four parts:
 
 If you miss a day, do not restart the week. Resume at the next unfinished day and carry the missed artifact forward into the next review checkpoint.
 
+If you are using GitHub Copilot instead of Claude Code, translate names as you read:
+- `CLAUDE.md` maps conceptually to `copilot-instructions.md`
+- `.claude/commands/` maps to reusable prompt or task-entry files
+- `.claude/skills/` maps to specialized agent or prompt customizations
+- `.claude/settings.json` maps to Copilot-side tool and agent configuration
+
 ---
 
 ## Week 1: Architecture, Tooling, And Control Planes
@@ -19,14 +25,14 @@ If you miss a day, do not restart the week. Resume at the next unfinished day an
 ### Day 1
 - Time budget: 45 minutes
 - Read: [study-guide-financius-gh600.md](study-guide-financius-gh600.md) and [domain-1-architecture-and-sdlc.md](domain-1-architecture-and-sdlc.md)
-- Do: inspect [CLAUDE.md](../../CLAUDE.md) and [.github/workflows/ci.yml](../../.github/workflows/ci.yml)
+- Do: inspect [CLAUDE.md](../../CLAUDE.md) and [.github/workflows/ci.yml](../../.github/workflows/ci.yml). If you are thinking in Copilot terms, treat `CLAUDE.md` as the role that `copilot-instructions.md` would play.
 - Output: write a short note describing policy layer, execution layer, and validation layer in this repo
 - Review checkpoint: can you explain why CI is part of the architecture rather than only automation?
 
 ### Day 2
 - Time budget: 45 minutes
 - Read: [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)
-- Do: inspect [.claude/settings.json](../../.claude/settings.json) and [mcp-and-tools-profile.md](mcp-and-tools-profile.md)
+- Do: inspect [.claude/settings.json](../../.claude/settings.json) and [mcp-and-tools-profile.md](mcp-and-tools-profile.md). If you are using Copilot, read `.claude/settings.json` as the role that tool and agent configuration would play there.
 - Output: produce a Class A, B, C, D tool inventory for at least six repo actions
 - Review checkpoint: can you justify why a read-only MCP server is the safest first MCP addition?
 
@@ -47,7 +53,7 @@ If you miss a day, do not restart the week. Resume at the next unfinished day an
 ### Day 5
 - Time budget: 30 minutes
 - Read: [practice-questions.md](practice-questions.md) Domain 1 and Domain 2 sections
-- Do: answer those questions without looking at the notes first
+- Do: answer those questions without looking at the notes first, using the Claude-to-Copilot translation if that is the toolset you study with
 - Output: record wrong answers and the repo artifact you should have used
 - Review checkpoint: are your mistakes mostly recall errors or judgment errors?
 
