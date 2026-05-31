@@ -1,10 +1,13 @@
 # Windows MCP Setup
 
-This repo includes a project-scoped `.mcp.json` with MCP servers for local repo access, local PostgreSQL inspection, and GitHub access:
+This repo includes a project-scoped `.mcp.json` with MCP servers for local repo access, local PostgreSQL inspection, GitHub access, browser automation, Docker inspection, and URL fetching:
 
 - `filesystem-readonly`
 - `postgres-readonly`
 - `github`
+- `playwright`
+- `docker`
+- `fetch-url`
 
 Use this note when running the project from Windows with VS Code and GitHub Copilot.
 
@@ -64,6 +67,12 @@ npx --version
 docker info
 ```
 
+For browser automation, install Playwright browsers if they are not already present:
+
+```powershell
+npx -y playwright install chromium
+```
+
 ## Verify the Repo MCP Config
 
 ```powershell
@@ -71,7 +80,10 @@ $json = Get-Content .mcp.json | ConvertFrom-Json
 if (
   $null -ne $json.mcpServers.'filesystem-readonly' -and
   $null -ne $json.mcpServers.'postgres-readonly' -and
-  $null -ne $json.mcpServers.'github'
+  $null -ne $json.mcpServers.'github' -and
+  $null -ne $json.mcpServers.'playwright' -and
+  $null -ne $json.mcpServers.'docker' -and
+  $null -ne $json.mcpServers.'fetch-url'
 ) {
   Write-Output "ALL_SERVERS_PRESENT"
 } else {
@@ -86,6 +98,9 @@ After VS Code restarts and the MCP-aware client loads the project config, it sho
 - `filesystem-readonly`
 - `postgres-readonly`
 - `github`
+- `playwright`
+- `docker`
+- `fetch-url`
 
 Use read-only checks first:
 
@@ -93,3 +108,6 @@ Use read-only checks first:
 - inspect Django models
 - inspect PostgreSQL schema or non-sensitive rows
 - inspect repository metadata, issues, or pull requests through GitHub MCP
+- inspect local pages and UI behavior through Playwright MCP
+- inspect local container, image, and compose state through Docker MCP
+- fetch local or external HTTP content through the URL fetch MCP

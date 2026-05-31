@@ -127,7 +127,7 @@ This repo already separates policy, execution, and validation. That is the core 
 - `infra/docker/backend.Dockerfile`
 
 ### Why this matters here
-Financius already shows tool allow-lists, deny rules, CI-scoped execution, containerized environment control, and a project `.mcp.json` with filesystem, PostgreSQL, and GitHub MCP servers. The main next gap is validating and governing that MCP surface over time, especially token scope and policy drift.
+Financius already shows tool allow-lists, deny rules, CI-scoped execution, containerized environment control, and a project `.mcp.json` with filesystem, PostgreSQL, GitHub, browser, Docker, and URL-fetch MCP servers. The main next gap is validating and governing that MCP surface over time, especially token scope, runtime-impact boundaries, and policy drift.
 
 ### Study materials
 - Lesson note: [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)

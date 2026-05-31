@@ -133,6 +133,18 @@ Current profile:
       "env": {
         "GITHUB_TOKEN": "%GITHUB_TOKEN%"
       }
+    },
+    "playwright": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@playwright/mcp", "--headless"]
+    },
+    "docker": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "mcp-docker-server"]
+    },
+    "fetch-url": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@j0hanz/fetch-url-mcp"]
     }
   }
 }
@@ -142,6 +154,9 @@ Implementation notes:
 - the first server remains read-oriented to reduce blast radius
 - the second server expands into read-oriented database inspection without adding write capability
 - the third server adds GitHub context access for repository metadata and collaboration state
+- the fourth server adds browser-level inspection for local UI and page behavior
+- the fifth server adds container and compose visibility aligned with the repo's container-first rule
+- the sixth server adds URL/content fetching for low-friction endpoint and page inspection
 - `cmd /c npx` is used because this repo is being worked from Windows
 - `MCP_POSTGRES_URL` stays environment-driven to match repo configuration principles
 - `GITHUB_TOKEN` stays environment-driven so credentials are not committed into project config
@@ -150,6 +165,9 @@ Why this is a good current baseline:
 - it improves inspectability without immediately granting write power
 - it adds direct visibility into the repo's target PostgreSQL architecture
 - it adds repository and workflow context without introducing local filesystem writes
+- it adds browser validation without forcing every UI check into manual local browsing
+- it adds container/runtime inspection that matches the repo's Docker-first operating model
+- it adds lightweight HTTP content inspection for docs, endpoints, and page checks
 - it keeps secrets and endpoints out of versioned config
 - it still follows the GH-600 pattern of starting with minimum viable capability rather than maximum convenience
 
@@ -185,6 +203,9 @@ Suggested policy table format:
 | filesystem-readonly | repo files | no | A | platform/devex | starter baseline |
 | postgres-readonly | configured Postgres database | no | A | platform/devex | requires `MCP_POSTGRES_URL` in env |
 | github | repository metadata and GitHub operations allowed by token scope | no by default study assumption | A/B depending on granted token scope | platform/devex | requires `GITHUB_TOKEN` in env |
+| playwright | local browser automation and page inspection | no by default study assumption | A/B | platform/devex | requires Playwright browser install |
+| docker | local containers, images, volumes, and compose services | potentially environment-impacting | B/C depending on enabled tools | platform/devex | requires Docker Desktop running |
+| fetch-url | URL fetch and readable page/content extraction | no | A | platform/devex | suited to GET-style inspection, not full API mutation |
 
 Approval rule:
 - any new Class C or D tool requires PR approval from maintainer + security reviewer.
@@ -272,9 +293,10 @@ These can be attached in PR description or in a `docs/gh600` run log.
 1. Keep `.mcp.json` read-oriented unless the guardrail policy expands deliberately.
 2. Add CI validation for `.mcp.json` syntax and required fields.
 3. Set `MCP_POSTGRES_URL` and `GITHUB_TOKEN` through environment configuration, not in version control.
-4. Classify each enabled MCP server into A/B/C/D.
-5. Treat GitHub token scope as part of the risk classification, not just the server name.
-6. Require approvals for any future Class C/D additions.
-7. Record tool usage and validation evidence in each substantial change.
+4. Treat Docker tool exposure and GitHub token scope as part of risk classification, not just server names.
+5. Keep Playwright and fetch-url focused on inspection and validation rather than broad automation drift.
+6. Classify each enabled MCP server into A/B/C/D.
+7. Require approvals for any future Class C/D additions.
+8. Record tool usage and validation evidence in each substantial change.
 
 This completes a GH-600-aligned foundation for tool use and environment interaction.

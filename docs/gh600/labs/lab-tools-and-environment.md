@@ -46,9 +46,10 @@ Review the existing `.mcp.json` as part of the lab. Do not expand it beyond the 
 1. Which actions are explicitly allowed, and which are denied, in `.claude/settings.json`?
 2. Which parts of the policy still reflect legacy Flask assumptions rather than the current Django-first stack?
 3. How does `.github/workflows/ci.yml` turn tool use into a staged control flow?
-4. Why are `filesystem-readonly`, `postgres-readonly`, and `github` reasonable MCP choices for this repo?
-5. How does `GITHUB_TOKEN` scope change the risk classification of the GitHub MCP server?
-6. Which steps are safe for autonomous execution, and which should require approval?
+4. Why are `filesystem-readonly`, `postgres-readonly`, `github`, `playwright`, `docker`, and `fetch-url` reasonable MCP choices for this repo?
+5. How do `GITHUB_TOKEN` scope and Docker tool exposure change MCP risk classification even when the server names look familiar?
+6. Which of the added MCPs are best treated as inspection-only despite having broader possible capability?
+7. Which steps are safe for autonomous execution, and which should require approval?
 
 ---
 
@@ -56,7 +57,7 @@ Review the existing `.mcp.json` as part of the lab. Do not expand it beyond the 
 
 Write short answers to these:
 - What is the smallest useful MCP profile you would add first?
-- If the current `.mcp.json` is the baseline, what should the next expansion avoid adding too early?
+- If the current `.mcp.json` is the baseline, what should the next expansion avoid adding too early beyond these inspection-heavy servers?
 - Which allowed commands would you keep, remove, or update?
 - Where does CI act as a guardrail rather than just a convenience?
 - What is the difference between a retry path and a rollback path in this repo?
@@ -68,4 +69,4 @@ Write short answers to these:
 You are done when you can produce:
 - a tool inventory grouped by risk level
 - one paragraph identifying policy drift in `.claude/settings.json`
-- one explanation of why the current MCP profile is still least-privilege, including token-scope limits
+- one explanation of why the current MCP profile is still least-privilege, including token-scope and runtime-impact limits

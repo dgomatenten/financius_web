@@ -84,6 +84,7 @@ Current state:
 - `filesystem-readonly` is the Phase 1 baseline
 - `postgres-readonly` is the Phase 2 expansion
 - `github` is the Phase 3 expansion
+- `playwright`, `docker`, and `fetch-url` extend the repo into browser, runtime, and HTTP inspection
 - all configured servers should still be treated as least-privilege and scope-limited
 - PostgreSQL access stays environment-driven through `MCP_POSTGRES_URL`
 - GitHub access stays environment-driven through `GITHUB_TOKEN`
@@ -97,6 +98,9 @@ How to reason about it:
 - start with read-only filesystem access
 - add read-only database inspection only after the first baseline is in place
 - add GitHub access only with minimal token scope and a clear collaboration use case
+- add Playwright for browser validation, not as an excuse to skip narrow local checks
+- add Docker access only if you can classify which container operations are read-only versus environment-impacting
+- add fetch-url for low-risk content inspection, not as a substitute for a full mutation-capable API client
 - document scope, write capability, owner, and approval class for each server
 - treat any future mutation-capable server as a separate risk decision
 
@@ -124,6 +128,7 @@ If asked how to improve this repo's tool strategy, a strong answer would say:
 - keep the current `.mcp.json` read-oriented
 - classify each enabled MCP server by risk and owner
 - review GitHub token scope as part of the MCP threat model
+- separate Playwright and fetch inspection use cases from Docker runtime-control use cases
 - update stale policy entries that still assume Flask-first execution
 - add CI validation for MCP config now that the file exists
 - require explicit escalation rules before any future write-capable MCP addition
