@@ -20,7 +20,7 @@ For GH-600, this domain is testing whether you can:
 - distinguish retry from rollback and escalation
 - describe why a read-only-first tool posture reduces blast radius
 
-The repo already demonstrates most of this through `.claude/settings.json` and CI. The missing `.mcp.json` is useful because it forces you to think about what a safe first MCP addition should look like.
+The repo already demonstrates most of this through `.claude/settings.json`, CI, and the project-scoped `.mcp.json`. The useful study question is no longer whether MCP should exist here, but whether the configured MCP surface is appropriately minimal and risk-classified.
 
 ---
 
@@ -40,7 +40,7 @@ Current posture highlights:
 - local service lifecycle script with safe cleanup checks
 
 Study note:
-- the repo is strong on command allow/deny patterns, but weaker on modern MCP configuration because `.mcp.json` is not present yet
+- the repo now has a minimal MCP baseline with read-only filesystem and PostgreSQL-oriented data access
 - `.claude/settings.json` also contains legacy Flask-era environment values, which makes it a useful example of policy drift during a migration
 
 ---
@@ -107,20 +107,31 @@ This table matters because GH-600 questions often hide the real problem inside a
 
 ---
 
-## Proposed .mcp.json Profile (Repo Standard)
+## Current .mcp.json Profile
 
-Create a project-scoped `.mcp.json` with minimal-read-first defaults.
+The repo now has a project-scoped `.mcp.json` with minimal-read-first defaults.
 
-Recommended starter profile:
+Current profile:
 
 ```json
 {
   "mcpServers": {
     "filesystem-readonly": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
       "env": {
         "MCP_MODE": "readonly"
+      }
+    },
+    "postgres-readonly": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-postgres", "%MCP_POSTGRES_URL%"]
+    },
+    "github": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "%GITHUB_TOKEN%"
       }
     }
   }
@@ -128,14 +139,19 @@ Recommended starter profile:
 ```
 
 Implementation notes:
-- keep first server read-oriented to reduce blast radius
-- add mutating MCP tools only after guardrail matrix is approved
-- pin server package versions once validated in CI
+- the first server remains read-oriented to reduce blast radius
+- the second server expands into read-oriented database inspection without adding write capability
+- the third server adds GitHub context access for repository metadata and collaboration state
+- `cmd /c npx` is used because this repo is being worked from Windows
+- `MCP_POSTGRES_URL` stays environment-driven to match repo configuration principles
+- `GITHUB_TOKEN` stays environment-driven so credentials are not committed into project config
 
-Why this is the right first move:
+Why this is a good current baseline:
 - it improves inspectability without immediately granting write power
-- it gives the team a tool-governance artifact that can later be validated in CI
-- it teaches the exact GH-600 pattern of starting with minimum viable capability rather than maximum convenience
+- it adds direct visibility into the repo's target PostgreSQL architecture
+- it adds repository and workflow context without introducing local filesystem writes
+- it keeps secrets and endpoints out of versioned config
+- it still follows the GH-600 pattern of starting with minimum viable capability rather than maximum convenience
 
 ## Worked MCP Approval Scenario
 
@@ -167,6 +183,8 @@ Suggested policy table format:
 | MCP Server | Scope | Write Access | Class | Owner | Notes |
 |---|---|---|---|---|---|
 | filesystem-readonly | repo files | no | A | platform/devex | starter baseline |
+| postgres-readonly | configured Postgres database | no | A | platform/devex | requires `MCP_POSTGRES_URL` in env |
+| github | repository metadata and GitHub operations allowed by token scope | no by default study assumption | A/B depending on granted token scope | platform/devex | requires `GITHUB_TOKEN` in env |
 
 Approval rule:
 - any new Class C or D tool requires PR approval from maintainer + security reviewer.
@@ -251,10 +269,12 @@ These can be attached in PR description or in a `docs/gh600` run log.
 
 ## Quick Adoption Checklist
 
-1. Create `.mcp.json` with one read-only server.
+1. Keep `.mcp.json` read-oriented unless the guardrail policy expands deliberately.
 2. Add CI validation for `.mcp.json` syntax and required fields.
-3. Classify each enabled tool into A/B/C/D.
-4. Require approvals for Class C/D additions.
-5. Record tool usage and validation evidence in each substantial change.
+3. Set `MCP_POSTGRES_URL` and `GITHUB_TOKEN` through environment configuration, not in version control.
+4. Classify each enabled MCP server into A/B/C/D.
+5. Treat GitHub token scope as part of the risk classification, not just the server name.
+6. Require approvals for any future Class C/D additions.
+7. Record tool usage and validation evidence in each substantial change.
 
 This completes a GH-600-aligned foundation for tool use and environment interaction.

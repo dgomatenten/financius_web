@@ -34,12 +34,12 @@ If you are using GitHub Copilot instead of Claude Code, translate names as you r
 - Read: [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)
 - Do: inspect [.claude/settings.json](../../.claude/settings.json) and [mcp-and-tools-profile.md](mcp-and-tools-profile.md). If you are using Copilot, read `.claude/settings.json` as the role that tool and agent configuration would play there.
 - Output: produce a Class A, B, C, D tool inventory for at least six repo actions
-- Review checkpoint: can you justify why a read-only MCP server is the safest first MCP addition?
+- Review checkpoint: can you justify why read-only MCP was the safest first addition, and why `GITHUB_TOKEN` scope now matters to the GitHub MCP risk class?
 
 ### Day 3
 - Time budget: 45 minutes
 - Read: [labs/lab-tools-and-environment.md](labs/lab-tools-and-environment.md)
-- Do: run the lab's suggested local validation commands if your environment is ready
+- Do: run the lab's suggested local validation commands if your environment is ready, and inspect [/.mcp.json](../../.mcp.json) to classify `filesystem-readonly`, `postgres-readonly`, and `github`
 - Output: write one paragraph on policy drift inside `.claude/settings.json`
 - Review checkpoint: can you distinguish retry policy from rollback policy?
 
@@ -236,7 +236,7 @@ If you are using GitHub Copilot instead of Claude Code, translate names as you r
 
 You are close to exam-ready when you can do all of the following from memory:
 - explain the repo's policy, execution, and validation layers
-- justify a read-only-first MCP/tool strategy
+- justify a read-only-first MCP/tool strategy and explain why token scope changes MCP risk without changing server names
 - describe rerun safety and context-drift detection using the migration workflow
 - classify failures before tuning anything
 - describe planner, implementer, reviewer, and coordinator boundaries

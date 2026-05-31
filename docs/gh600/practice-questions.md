@@ -56,7 +56,7 @@ D. Execution can define policy as it goes if the final tests pass.
 
 ### Questions
 
-1. Why is a read-only MCP server the right first MCP addition for this repo?
+1. Why was a read-only MCP server the right first MCP addition for this repo, and how does the later `github` MCP change the governance discussion?
 
 2. `.claude/settings.json` still contains Flask-era environment entries. What is the best GH-600 interpretation of that fact?
 
@@ -68,17 +68,17 @@ C. It means the repo cannot use Django at all.
 
 D. It should be ignored because MCP is more important than shell policy.
 
-3. A contributor proposes adding a write-capable filesystem MCP server before any read-only server exists. What is the strongest response?
+3. A contributor proposes adding a broad-scope or write-capable MCP server without first tightening GitHub token scope and approval rules. What is the strongest response?
 
 4. What is the difference between retry policy and rollback policy in this repo's tool strategy?
 
 ### Answer Key And Rationale
 
-1. A read-only server improves inspectability while keeping blast radius low. It aligns with minimum viable capability and gives the team a safer first tool-governance artifact.
+1. A read-only server improved inspectability while keeping blast radius low. That was the right first move because it created a safer governance baseline before any broader capability was introduced. Once `github` is added, GH-600 reasoning must also include token scope, because the server name alone does not define risk.
 
 2. Correct answer: B. GH-600 rewards recognizing that configuration and policy artifacts can drift away from system reality, which creates governance risk.
 
-3. Reject it as the first MCP addition, require risk classification and owner, and require proof that existing local mutation paths are insufficient. The key issue is unnecessary expansion of write scope.
+3. Reject it until risk classification, owner, and approval rules are clear, and review GitHub token scope at the same time. The key issue is unnecessary expansion of effective capability without first governing the existing MCP surface properly.
 
 4. Retry policy handles transient operational failures. Rollback policy handles cases where a mutating or environment-impacting action may need to be reversed or contained. They solve different risk classes.
 
@@ -220,7 +220,7 @@ D. L3 only if CI fails
 
 A. Add a write-capable MCP server, let a single agent edit broadly, and rely on CI to catch mistakes.
 
-B. Add a read-only MCP server first, identify the controlling file, make the smallest relevant change, and run the smallest discriminating validation before widening scope.
+B. Add a read-only MCP server first, identify the controlling file, make the smallest relevant change, run the smallest discriminating validation before widening scope, and treat token scope as part of MCP risk classification.
 
 C. Start with a broad full-suite run, then decide what file probably matters.
 
@@ -238,7 +238,7 @@ D. Tune prompts and tools together until the output looks right.
 
 ### Answer Key And Rationale
 
-1. Correct answer: B. It combines minimum viable tool capability, local control-path identification, narrow validation, and disciplined scope growth.
+1. Correct answer: B. It combines minimum viable tool capability, local control-path identification, narrow validation, disciplined scope growth, and governance of effective tool power rather than just tool names.
 
 2. Freeze the workflow and resolve the scope conflict through coordinator or human review. Passing tests do not erase an authorization mismatch.
 

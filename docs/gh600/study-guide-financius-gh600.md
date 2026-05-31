@@ -127,7 +127,7 @@ This repo already separates policy, execution, and validation. That is the core 
 - `infra/docker/backend.Dockerfile`
 
 ### Why this matters here
-Financius already shows tool allow-lists, deny rules, CI-scoped execution, and containerized environment control. The main gap is that the repo does not yet have a project `.mcp.json`.
+Financius already shows tool allow-lists, deny rules, CI-scoped execution, containerized environment control, and a project `.mcp.json` with filesystem, PostgreSQL, and GitHub MCP servers. The main next gap is validating and governing that MCP surface over time, especially token scope and policy drift.
 
 ### Study materials
 - Lesson note: [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)
@@ -289,7 +289,7 @@ You are close to exam-ready when you can do all of the following from memory:
 
 If time is limited before the exam, do these first:
 
-1. Implement and document `.mcp.json` with allow-list strategy.
+1. Add CI validation for `.mcp.json` syntax and required keys.
 2. Create one concrete multi-agent orchestration spec for this repo.
 3. Build a guardrails matrix mapped to `.claude/settings.json` + CI controls.
 4. Run two full evaluate-tune iterations using your real test artifacts.

@@ -76,19 +76,29 @@ That last point matters. Tool use is not just the command itself. It also includ
 
 ---
 
-## The Main Gap In This Repo
+## The Current MCP State In This Repo
 
-There is no project `.mcp.json` yet.
+The repo now has a project `.mcp.json`.
+
+Current state:
+- `filesystem-readonly` is the Phase 1 baseline
+- `postgres-readonly` is the Phase 2 expansion
+- `github` is the Phase 3 expansion
+- all configured servers should still be treated as least-privilege and scope-limited
+- PostgreSQL access stays environment-driven through `MCP_POSTGRES_URL`
+- GitHub access stays environment-driven through `GITHUB_TOKEN`
 
 Why that matters for study:
 - GH-600 expects you to understand tool configuration, not just local shell commands
-- MCP makes tool policy more inspectable and portable
-- adding a read-only MCP server is the safest first step because it keeps the blast radius low
+- MCP now exists here as a real control surface rather than a hypothetical gap
+- the study question becomes whether the current MCP expansion is still least-privilege and well-governed
 
 How to reason about it:
-- first add a read-only server
-- then document scope, write capability, owner, and approval class
-- only later consider mutation-capable servers
+- start with read-only filesystem access
+- add read-only database inspection only after the first baseline is in place
+- add GitHub access only with minimal token scope and a clear collaboration use case
+- document scope, write capability, owner, and approval class for each server
+- treat any future mutation-capable server as a separate risk decision
 
 ---
 
@@ -111,11 +121,12 @@ The allow-list still describes an older architecture, so the tool policy and the
 ## What Good Looks Like In An Exam Answer
 
 If asked how to improve this repo's tool strategy, a strong answer would say:
-- create a minimal `.mcp.json` with one read-oriented server
-- classify tools by read-only, local mutation, environment-impacting, and irreversible risk
+- keep the current `.mcp.json` read-oriented
+- classify each enabled MCP server by risk and owner
+- review GitHub token scope as part of the MCP threat model
 - update stale policy entries that still assume Flask-first execution
-- add CI validation for MCP config once the file exists
-- require explicit escalation rules for Class C and D actions
+- add CI validation for MCP config now that the file exists
+- require explicit escalation rules before any future write-capable MCP addition
 
 That answer is stronger than simply saying, "add MCP support," because it ties tool choice to risk and validation.
 
