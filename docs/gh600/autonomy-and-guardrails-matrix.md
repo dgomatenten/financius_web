@@ -4,6 +4,16 @@
 
 Operationalize GH-600 Domain 6 (Implement guardrails and accountability) with explicit autonomy levels, approval paths, and evidence requirements for this repository.
 
+## What GH-600 Is Testing Here
+
+This domain is testing whether you can control autonomy by risk rather than by convenience.
+
+You should be able to explain:
+- which actions remain fully autonomous
+- which actions require approval before execution
+- what evidence must survive after medium- or high-risk work
+- why blocked actions should stop the workflow rather than be retried casually
+
 ---
 
 ## Guardrail Principles
@@ -17,6 +27,9 @@ Current baseline references:
 - `.claude/settings.json`
 - `.github/workflows/ci.yml`
 - `CLAUDE.md`
+
+Study note:
+- the repo already has the raw pieces for a guardrail model, but a learner still needs to connect those pieces to actual approval decisions and audit artifacts
 
 ---
 
@@ -85,6 +98,20 @@ Required checks:
 - rollback tested or documented
 - post-action verification evidence
 
+## Worked Classification Examples
+
+Use these repo examples to practice autonomy decisions:
+
+| Action | Suggested Level | Why |
+|---|---|---|
+| reading source files and docs | L0 | no mutation and no environment risk |
+| updating study docs and running quick review | L1 | local, low-risk mutation |
+| editing auth behavior or contract-sensitive views | L2 | local change with client or security implications |
+| local migration rehearsal on meaningful data | L2 | state-impacting with rollback concerns |
+| deployment trigger or destructive cleanup | L3 | irreversible or production-adjacent |
+
+The important skill is not memorizing the table. It is being able to justify why the same command family can move between levels depending on impact.
+
 ---
 
 ## Repo Action Matrix
@@ -100,6 +127,19 @@ Required checks:
 | Trigger deploy | L3 | no | yes | GitHub + Render controls | deploy record + validation |
 | Force push | L3 | no (blocked) | n/a | `.claude/settings.json` deny | n/a |
 | Destructive delete operation | L3 | no | yes | policy + review | rollback and approval log |
+
+## Worked Approval Example
+
+Scenario:
+- a change touches auth token behavior and may affect Android clients
+
+Good handling:
+1. classify it as L2, not L1
+2. require a short plan artifact and rollback note before execution
+3. require contract and auth validation after the change
+4. block promotion to release until evidence is attached
+
+This is stronger than saying "be careful with auth" because it translates concern into process.
 
 ---
 
@@ -118,6 +158,27 @@ Checkpoint payload must include:
 - rollback path
 - required validation plan
 
+## Worked Human-In-The-Loop Checkpoint
+
+```yaml
+task_id: GH600-20260531-02
+action: adjust auth refresh-token behavior
+risk_level: L2
+rationale: contract and client-auth compatibility may be affected
+impact_radius:
+	- backend auth endpoints
+	- Android token refresh flow
+rollback_path:
+	- revert change set
+	- rerun auth and contract tests
+validation_plan:
+	- pytest tests/dj/unit/test_auth_views.py -q
+	- pytest tests/dj/contract/test_envelope_contract.py -q
+approval_required: true
+```
+
+The exam is likely to favor answers that preserve this level of decision clarity.
+
 ---
 
 ## Policy Violations And Blocking Rules
@@ -134,6 +195,10 @@ When blocked:
 3. request human decision
 4. resume only after explicit authorization
 
+Why this matters:
+- blocked actions are not transient failures
+- retrying a blocked action is itself a guardrail failure
+
 ---
 
 ## Accountability Artifacts
@@ -148,6 +213,14 @@ For each medium/high-risk run, store:
 
 Suggested path:
 - `docs/gh600/runs/<task_id>/`
+
+## What A Strong Exam Answer Sounds Like
+
+For this repo, a strong answer would say:
+- keep L0 and most L1 work autonomous to preserve delivery speed
+- require L2 approval for contract, auth, or migration-sensitive changes
+- reserve L3 for deployment, destructive, or irreversible actions
+- preserve plan, validation, and escalation artifacts so actions remain auditable
 
 ---
 
@@ -170,3 +243,10 @@ This balances GH-600 guardrail rigor with practical delivery speed.
 3. Require run artifacts for medium/high-risk work.
 4. Review `.claude/settings.json` quarterly to keep least-privilege current.
 5. Align CI checks with guardrail policy updates.
+
+## Self-Check
+
+1. Why can the same code-editing workflow be L1 in one case and L2 in another?
+2. What makes a blocked action different from a normal failed command?
+3. Why does guardrail design need both speed protection and approval checkpoints?
+4. What evidence should always survive an L2 or L3 action?

@@ -1,262 +1,226 @@
-# GH-600 Study Guide Using the Financius Web Codebase
+# GH-600 Study Pack Using the Financius Web Codebase
 
 ## Purpose
 
-This document turns your current repository into a hands-on lab for **Exam GH-600: Developing in Agentic AI Systems**.
+This document is the entry point for a repo-backed GH-600 study pack.
+
+Use it to do three things:
+- map each GH-600 domain to concrete Financius artifacts
+- move from concept study into hands-on repo labs
+- track what is available now versus what is still planned
 
 Primary source used:
 - Microsoft Learn GH-600 study guide (last updated 2026-05-13):
   https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/gh-600
 
-Goal:
-- Map each GH-600 skills domain to concrete artifacts in this repo.
-- Provide practical exercises you can run here.
-- Identify objective gaps and how to close them before exam day.
+---
+
+## How To Use This Pack
+
+Study each domain in the same order:
+1. Read the domain lesson note.
+2. Inspect the referenced repo files.
+3. Run the matching lab.
+4. Capture what you learned in your notes or journal.
+5. Return later for practice questions and the 4-week schedule.
+
+If you are short on time, start with Domain 2, Domain 4, and Domain 5. Those are the highest-value sections currently implemented in detail.
 
 ---
 
-## GH-600 Skills At A Glance (Official)
+## GH-600 Skills At A Glance
 
-| Domain | Weight |
-|---|---:|
-| Prepare agent architecture and SDLC processes | 15-20% |
-| Implement tool use and environment interaction | 20-25% |
-| Manage memory, state, and execution | 10-15% |
-| Perform evaluation, error analysis, and tuning | 15-20% |
-| Orchestrate multi-agent coordination | 15-20% |
-| Implement guardrails and accountability | 10-15% |
+| Domain | Weight | Status In This Pack |
+|---|---:|---|
+| Prepare agent architecture and SDLC processes | 15-20% | detailed note available |
+| Implement tool use and environment interaction | 20-25% | detailed note and lab available |
+| Manage memory, state, and execution | 10-15% | detailed note, lab, and reference available |
+| Perform evaluation, error analysis, and tuning | 15-20% | detailed note and lab available |
+| Orchestrate multi-agent coordination | 15-20% | detailed note and lab available |
+| Implement guardrails and accountability | 10-15% | detailed note and reference available |
 
-Exam tip: Prioritize study time by weight. The largest domain is **tool use and environment interaction (20-25%)**.
+Exam tip: Domain 2 carries the highest weight, but Domains 4 and 5 are where repo-backed reasoning practice becomes most visible.
 
 ---
 
-## Repo-as-Lab: Objective Mapping
+## Available Study Materials
 
-## 1) Prepare Agent Architecture And SDLC Processes (15-20%)
+### Domain notes available now
+- [domain-1-architecture-and-sdlc.md](domain-1-architecture-and-sdlc.md)
+- [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)
+- [domain-3-memory-state-execution.md](domain-3-memory-state-execution.md)
+- [domain-4-evaluation-and-tuning.md](domain-4-evaluation-and-tuning.md)
+- [domain-5-multi-agent-coordination.md](domain-5-multi-agent-coordination.md)
+- [domain-6-guardrails-and-accountability.md](domain-6-guardrails-and-accountability.md)
+
+### Labs available now
+- [labs/lab-tools-and-environment.md](labs/lab-tools-and-environment.md)
+- [labs/lab-memory-and-state.md](labs/lab-memory-and-state.md)
+- [labs/lab-evaluation-and-tuning.md](labs/lab-evaluation-and-tuning.md)
+- [labs/lab-multi-agent-workflow.md](labs/lab-multi-agent-workflow.md)
+
+### Existing companion references
+- [mcp-and-tools-profile.md](mcp-and-tools-profile.md)
+- [multi-agent-orchestration.md](multi-agent-orchestration.md)
+- [autonomy-and-guardrails-matrix.md](autonomy-and-guardrails-matrix.md)
+- [state-and-memory-playbook.md](state-and-memory-playbook.md)
+- [evaluation-and-tuning-report.md](evaluation-and-tuning-report.md)
+- [practice-questions.md](practice-questions.md)
+- [study-schedule-4-weeks.md](study-schedule-4-weeks.md)
+
+### Planned next additions
+- alignment updates for the broader study docs under `docs/study/`
+
+---
+
+## Repo-As-Lab Mapping
+
+## 1) Prepare Agent Architecture And SDLC Processes
 
 ### What GH-600 expects
-- Define what agents should do in each SDLC stage.
-- Separate planning vs execution.
-- Produce inspectable artifacts and control autonomy.
+- define agent responsibilities by SDLC stage
+- separate planning from execution
+- keep outputs inspectable and reviewable
 
-### Where this repo already demonstrates it
-- Project-level governance and constraints:
-  - `CLAUDE.md`
-  - `.claude/CLAUDE.md`
-- Team-operable command and skill structure:
-  - `.claude/commands/django.md`
-  - `.claude/commands/django-new.md`
-  - `.claude/skills/modern-web-guidance/SKILL.md`
-- CI as inspectable control plane:
-  - `.github/workflows/ci.yml`
+### Best repo anchors
+- `CLAUDE.md`
+- `.claude/CLAUDE.md`
+- `.claude/commands/django.md`
+- `.claude/commands/django-new.md`
+- `.github/workflows/ci.yml`
 
-### Why this matters for GH-600
-This mirrors the exam concept of “system of record + control plane.” Your repo already separates:
-- **Policy/instructions** (`CLAUDE.md`)
-- **Execution** (scripts, commands)
-- **Validation artifacts** (CI jobs)
+### Why this matters here
+This repo already separates policy, execution, and validation. That is the core GH-600 architecture pattern even before any multi-agent system is added.
 
-### Practice exercise
-1. In `CLAUDE.md`, create a small planning gate for medium/high-risk changes.
-2. Define required output artifact for plan approval (for example: impact, files touched, rollback path).
-3. Validate that your CI pipeline can enforce at least one of those checks.
+### Study action
+- Lesson note: [domain-1-architecture-and-sdlc.md](domain-1-architecture-and-sdlc.md)
 
 ---
 
-## 2) Implement Tool Use And Environment Interaction (20-25%)
+## 2) Implement Tool Use And Environment Interaction
 
 ### What GH-600 expects
-- Select and configure tools.
-- Configure MCP servers and allow lists.
-- Scope execution context (repo, branch, CI).
-- Implement retries/rollback/escalation paths.
+- choose tools deliberately
+- limit capability by environment and risk
+- define retries, rollback, and escalation paths
+- make tool use auditable
 
-### Where this repo already demonstrates it
-- Tool permissions and deny rules:
-  - `.claude/settings.json`
-- Environment-scoped execution scripts:
-  - `scripts/run_services.sh`
-- Containerized env interaction:
-  - `infra/compose/docker-compose.yml`
-  - `infra/docker/backend.Dockerfile`
-- Branch/PR CI behavior and deployment trigger:
-  - `.github/workflows/ci.yml`
+### Best repo anchors
+- `.claude/settings.json`
+- `.github/workflows/ci.yml`
+- `scripts/run_services.sh`
+- `infra/compose/docker-compose.yml`
+- `infra/docker/backend.Dockerfile`
 
-### GH-600 objective gap to close
-- No project `.mcp.json` found yet.
+### Why this matters here
+Financius already shows tool allow-lists, deny rules, CI-scoped execution, and containerized environment control. The main gap is that the repo does not yet have a project `.mcp.json`.
 
-### Practice exercise (high-priority)
-1. Add `.mcp.json` with one safe read-oriented server.
-2. Add explicit allow-list/permission rationale in docs.
-3. Add a CI check that validates `.mcp.json` schema or required fields.
-4. Document which tools are approved for autonomous execution vs human approval.
-
-Deliverable suggestion:
-- `docs/gh600/mcp-and-tools-profile.md`
+### Study materials
+- Lesson note: [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)
+- Lab: [labs/lab-tools-and-environment.md](labs/lab-tools-and-environment.md)
+- Reference: [mcp-and-tools-profile.md](mcp-and-tools-profile.md)
 
 ---
 
-## 3) Manage Memory, State, And Execution (10-15%)
+## 3) Manage Memory, State, And Execution
 
 ### What GH-600 expects
-- Use short-term vs long-term memory deliberately.
-- Persist progress and avoid context drift.
-- Resume work safely across tools/environments.
+- distinguish short-term versus persistent state
+- resume safely after interruption
+- detect stale context before acting
 
-### Where this repo already demonstrates it
-- Persistent migration state and resumability concepts:
-  - `backend/ledger/management/commands/migrate_from_sqlite.py`
-  - `backend/tests/dj/unit/test_migrate_from_sqlite.py`
-- Durable DB-backed token/state handling:
-  - `backend/accounts/models.py`
-  - `backend/accounts/views.py`
-- Deterministic envelope for continuity across services:
-  - `backend/financius_web/exception_handler.py`
-  - `backend/tests/dj/contract/test_envelope_contract.py`
+### Best repo anchors
+- `backend/ledger/management/commands/migrate_from_sqlite.py`
+- `backend/tests/dj/unit/test_migrate_from_sqlite.py`
+- `backend/accounts/models.py`
+- `backend/accounts/views.py`
+- `backend/financius_web/exception_handler.py`
 
-### Why this matters for GH-600
-The idempotent migration pattern and contract stability are practical analogs of agent memory/state continuity:
-- No repeated destructive work.
-- Resume execution without semantic drift.
-- Keep outputs stable for downstream consumers.
+### Why this matters here
+The migration command is an unusually strong study example because it is explicitly idempotent, supports dry-run behavior, and translates state between two systems without repeating destructive work.
 
-### Practice exercise
-1. Write a short “agent run ledger” format (status, decision, next action, rollback note).
-2. Use it while performing a migration dry-run + real run.
-3. Capture where stale context might occur and how you detect it.
-
-Deliverable suggestion:
-- `docs/gh600/state-and-memory-playbook.md`
+### Study action
+- Lesson note: [domain-3-memory-state-execution.md](domain-3-memory-state-execution.md)
+- Lab: [labs/lab-memory-and-state.md](labs/lab-memory-and-state.md)
+- Reference: [state-and-memory-playbook.md](state-and-memory-playbook.md)
 
 ---
 
-## 4) Perform Evaluation, Error Analysis, And Tuning (15-20%)
+## 4) Perform Evaluation, Error Analysis, And Tuning
 
 ### What GH-600 expects
-- Define success criteria and evaluation signals.
-- Classify failures by root cause.
-- Tune instructions/workflows/tools based on evidence.
+- define good evaluation signals before you tune
+- separate reasoning failures from tool or environment failures
+- rerun checks after each change to confirm improvement
 
-### Where this repo already demonstrates it
-- Contract-level evaluation signals:
-  - `backend/tests/dj/contract/test_envelope_contract.py`
-- Unit/integration root-cause oriented tests:
-  - `backend/tests/dj/unit/test_auth_views.py`
-  - `backend/tests/dj/unit/test_migrate_from_sqlite.py`
-- Logging and traceability in API flows:
-  - `backend/accounts/views.py`
-  - `backend/ledger/views.py`
-- CI quality gates:
-  - `.github/workflows/ci.yml`
+### Best repo anchors
+- `backend/tests/dj/contract/test_envelope_contract.py`
+- `backend/tests/dj/unit/test_auth_views.py`
+- `backend/tests/dj/unit/test_migrate_from_sqlite.py`
+- `backend/financius_web/exception_handler.py`
+- `.github/workflows/ci.yml`
 
-### Practice exercise
-1. Create an error taxonomy for this repo:
-   - reasoning/config issue
-   - tool misuse
-   - environment issue
-   - policy/permission issue
-2. Pick 5 recent failures (or simulate) and classify them.
-3. Tune one instruction or script, then re-run tests to validate improvement.
+### Why this matters here
+The repo already has contract-level and unit-level checks that can be used as evaluation signals. The main study move is learning how to classify failures and decide what to tune from the evidence.
 
-Deliverable suggestion:
-- `docs/gh600/evaluation-and-tuning-report.md`
+### Study materials
+- Lesson note: [domain-4-evaluation-and-tuning.md](domain-4-evaluation-and-tuning.md)
+- Lab: [labs/lab-evaluation-and-tuning.md](labs/lab-evaluation-and-tuning.md)
 
 ---
 
-## 5) Orchestrate Multi-Agent Coordination (15-20%)
+## 5) Orchestrate Multi-Agent Coordination
 
 ### What GH-600 expects
-- Coordinate multiple agents safely.
-- Handle parallel work and conflict resolution.
-- Preserve observability of handoffs and outcomes.
+- coordinate specialist roles safely
+- handle parallel work and conflict resolution
+- keep handoffs inspectable
 
-### Where this repo partially demonstrates it
-- Existing role routing and skill invocation patterns:
-  - `CLAUDE.md` (skill routing table)
-- CI job orchestration and stage dependencies:
-  - `.github/workflows/ci.yml` (lint, test, docker, deploy)
-
-### GH-600 objective gap to close
-- No explicit multi-agent workflow artifact in-repo (for example: coordinator policy + handoff schema + conflict-resolution policy).
-
-### Practice exercise (high-priority)
-1. Design a 3-agent workflow for this repo:
-   - Planner Agent: scope + risk + success criteria
-   - Implementer Agent: code changes
-   - Reviewer Agent: contract/security/regression checks
-2. Define conflict protocol (who wins, merge policy, escalation).
-3. Define mandatory handoff artifact for each phase.
-
-Deliverable suggestion:
+### Best repo anchors
+- `CLAUDE.md`
+- `.github/workflows/ci.yml`
 - `docs/gh600/multi-agent-orchestration.md`
 
+### Why this matters here
+The repo has role routing and pipeline stages already, but GH-600 expects explicit coordinator logic, handoff artifacts, and conflict handling. That is why this domain needs both a lesson note and a lab.
+
+### Study materials
+- Lesson note: [domain-5-multi-agent-coordination.md](domain-5-multi-agent-coordination.md)
+- Lab: [labs/lab-multi-agent-workflow.md](labs/lab-multi-agent-workflow.md)
+- Reference: [multi-agent-orchestration.md](multi-agent-orchestration.md)
+
 ---
 
-## 6) Implement Guardrails And Accountability (10-15%)
+## 6) Implement Guardrails And Accountability
 
 ### What GH-600 expects
-- Define autonomy levels by risk.
-- Require human approval for irreversible/compliance-sensitive actions.
-- Enforce least privilege and auditability.
+- set autonomy levels by risk
+- keep high-risk actions behind approval gates
+- preserve auditability
 
-### Where this repo already demonstrates it
-- Explicit command allow/deny boundaries:
-  - `.claude/settings.json`
-- Environment-driven security boundaries:
-  - `backend/financius_web/settings.py`
-- API envelope and error standardization for safe client handling:
-  - `backend/financius_web/exception_handler.py`
-
-### Practice exercise
-1. Create an autonomy matrix for repo actions:
-   - Auto allowed
-   - Auto with constraints
-   - Human approval required
-2. Include risky actions (schema changes, destructive scripts, force push, deployment).
-3. Tie each class to concrete controls in config/CI.
-
-Deliverable suggestion:
+### Best repo anchors
+- `.claude/settings.json`
+- `backend/financius_web/settings.py`
+- `backend/financius_web/exception_handler.py`
 - `docs/gh600/autonomy-and-guardrails-matrix.md`
+
+### Why this matters here
+Least privilege is already present in the repo, but the learner still needs worked examples that show how guardrails affect real execution decisions.
+
+### Study action
+- Lesson note: [domain-6-guardrails-and-accountability.md](domain-6-guardrails-and-accountability.md)
+- Reference: [autonomy-and-guardrails-matrix.md](autonomy-and-guardrails-matrix.md)
 
 ---
 
-## 4-Week GH-600 Plan Using This Repo
+## Suggested First Week From This Pack
 
-## Week 1: Architecture + Tooling Foundations
-- Read and annotate:
-  - `CLAUDE.md`
-  - `.claude/settings.json`
-  - `.github/workflows/ci.yml`
-- Produce:
-  - tool inventory
-  - autonomy boundaries
-  - draft MCP plan
-
-## Week 2: Memory/State + Reliability
-- Deep study:
-  - `backend/ledger/management/commands/migrate_from_sqlite.py`
-  - `backend/tests/dj/unit/test_migrate_from_sqlite.py`
-  - `backend/accounts/views.py`
-- Produce:
-  - state model for long-running execution
-  - context-drift detection checklist
-
-## Week 3: Evaluation + Tuning
-- Deep study:
-  - `backend/tests/dj/contract/test_envelope_contract.py`
-  - `backend/tests/dj/unit/test_auth_views.py`
-  - `backend/financius_web/exception_handler.py`
-- Produce:
-  - failure taxonomy
-  - root-cause worksheet
-  - 2 tuning loops with before/after evidence
-
-## Week 4: Multi-Agent + Guardrails Drill
-- Design and run a simulated multi-agent workflow over one medium feature change.
-- Produce:
-  - handoff artifacts
-  - conflict-resolution log
-  - post-hoc analysis and guardrail updates
+1. Read [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md) and run [labs/lab-tools-and-environment.md](labs/lab-tools-and-environment.md).
+2. Read [domain-4-evaluation-and-tuning.md](domain-4-evaluation-and-tuning.md) and run [labs/lab-evaluation-and-tuning.md](labs/lab-evaluation-and-tuning.md).
+3. Read [domain-5-multi-agent-coordination.md](domain-5-multi-agent-coordination.md) and run [labs/lab-multi-agent-workflow.md](labs/lab-multi-agent-workflow.md).
+4. Read [domain-3-memory-state-execution.md](domain-3-memory-state-execution.md) and run [labs/lab-memory-and-state.md](labs/lab-memory-and-state.md).
+5. Review [mcp-and-tools-profile.md](mcp-and-tools-profile.md), [state-and-memory-playbook.md](state-and-memory-playbook.md), [evaluation-and-tuning-report.md](evaluation-and-tuning-report.md), [multi-agent-orchestration.md](multi-agent-orchestration.md), and [autonomy-and-guardrails-matrix.md](autonomy-and-guardrails-matrix.md).
+6. Use [../study/getting-started.md](../study/getting-started.md) for the broader study sequence outside GH-600-specific work.
 
 ---
 

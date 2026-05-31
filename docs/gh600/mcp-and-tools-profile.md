@@ -10,6 +10,18 @@ This document covers:
 - allow-list guidance and approval paths
 - traceability and rollback expectations
 
+## What GH-600 Is Testing Here
+
+This document is useful for study only if you connect policy to judgment.
+
+For GH-600, this domain is testing whether you can:
+- choose the smallest safe tool for the task
+- classify tools by risk and environment impact
+- distinguish retry from rollback and escalation
+- describe why a read-only-first tool posture reduces blast radius
+
+The repo already demonstrates most of this through `.claude/settings.json` and CI. The missing `.mcp.json` is useful because it forces you to think about what a safe first MCP addition should look like.
+
 ---
 
 ## Current Tooling Baseline In Repo
@@ -26,6 +38,10 @@ Current posture highlights:
 - explicit deny rules for high-risk destructive actions
 - CI pipeline with lint, tests, docker build, deploy trigger
 - local service lifecycle script with safe cleanup checks
+
+Study note:
+- the repo is strong on command allow/deny patterns, but weaker on modern MCP configuration because `.mcp.json` is not present yet
+- `.claude/settings.json` also contains legacy Flask-era environment values, which makes it a useful example of policy drift during a migration
 
 ---
 
@@ -75,6 +91,20 @@ Expected controls:
 - two-person review for execution
 - incident-ready audit log
 
+## Worked Repo Classification
+
+Use the repo's current workflows to practice classification:
+
+| Action | Suggested Class | Why |
+|---|---|---|
+| reading source files and tests | A | no mutation and no environment impact |
+| editing docs or code locally | B | local mutation with narrow blast radius |
+| running local `pytest` or `ruff` | B | mutates no source but does affect execution state and evidence |
+| running a real migration on shared data | C | environment-impacting and requires rollback thinking |
+| deploy trigger or secret rotation | D | production-adjacent and not safely autonomous |
+
+This table matters because GH-600 questions often hide the real problem inside an apparently simple tool action. The right answer usually depends on risk class, not only task intent.
+
 ---
 
 ## Proposed .mcp.json Profile (Repo Standard)
@@ -102,6 +132,25 @@ Implementation notes:
 - add mutating MCP tools only after guardrail matrix is approved
 - pin server package versions once validated in CI
 
+Why this is the right first move:
+- it improves inspectability without immediately granting write power
+- it gives the team a tool-governance artifact that can later be validated in CI
+- it teaches the exact GH-600 pattern of starting with minimum viable capability rather than maximum convenience
+
+## Worked MCP Approval Scenario
+
+Scenario:
+- a contributor wants to add a filesystem tool with write access so an agent can edit files directly through MCP
+
+Good GH-600 response:
+1. reject it as the first MCP addition
+2. require a risk classification and owner
+3. require justification for why existing local editing paths are insufficient
+4. require updated approval rules in the guardrails matrix before adoption
+
+Reason:
+- the repo already has mutation paths through existing tooling, so the first MCP server should optimize visibility and control, not expand write scope without need
+
 ---
 
 ## MCP Allow-List Policy
@@ -122,6 +171,9 @@ Suggested policy table format:
 Approval rule:
 - any new Class C or D tool requires PR approval from maintainer + security reviewer.
 
+Suggested learner exercise:
+- take three existing tools in this repo and write their owner, scope, write capability, and approval class as if they were MCP entries
+
 ---
 
 ## CI Validation For MCP Configuration
@@ -140,6 +192,11 @@ python -m json.tool .mcp.json >/dev/null
 
 Optional stronger validation:
 - custom script in `scripts/` that enforces policy keys and class labels.
+
+Why CI validation matters for GH-600:
+- tool configuration is part of the system architecture
+- if policy artifacts are not validated, they drift into documentation rather than control
+- CI is the cleanest place to prove the tool contract is being enforced consistently
 
 ---
 
@@ -160,6 +217,16 @@ Escalate to human when:
 - action is irreversible or compliance-sensitive
 - repeated failures indicate context drift or unclear requirements
 
+## Worked Decision Example
+
+Bad decision:
+- add a mutation-capable MCP server because it seems faster than the current local edit workflow
+
+Stronger decision:
+- keep the first MCP server read-only, use existing local mutation tools for edits, and require evidence that an additional write-capable server solves a real problem that cannot be handled safely another way
+
+That second answer is stronger because it ties tool expansion to risk and necessity.
+
 ---
 
 ## Traceability And Accountability
@@ -172,6 +239,13 @@ Required evidence artifacts per execution cycle:
 5. rollback readiness note
 
 These can be attached in PR description or in a `docs/gh600` run log.
+
+## Self-Check
+
+1. Why is a read-only MCP server the right first addition here?
+2. What turns a tool policy file into an actual control surface instead of documentation only?
+3. When should a failing tool action be retried versus escalated?
+4. Why is policy drift inside `.claude/settings.json` a useful GH-600 study example?
 
 ---
 

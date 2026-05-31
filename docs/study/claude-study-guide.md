@@ -6,6 +6,9 @@ You are building Financius Web while simultaneously studying Claude AI.
 This guide connects your daily development work to concrete Claude concepts,
 so every coding session doubles as exam prep.
 
+Use this guide as the broad daily-practice companion to the GH-600 exam pack in [`../gh600/study-guide-financius-gh600.md`](../gh600/study-guide-financius-gh600.md).
+The GH-600 pack is now the primary exam path. This guide is where you build repetition, experiments, and intuition around Claude systems more generally.
+
 ---
 
 ## What You Are Studying
@@ -19,6 +22,11 @@ The Anthropic Claude certification covers three overlapping areas:
 | **API & tool use** | Claude API calls, tool use, structured output, caching, streaming, agents |
 
 Your Financius project is a live lab for all three.
+
+If your immediate goal is GH-600, pair this guide with:
+- [`../gh600/study-guide-financius-gh600.md`](../gh600/study-guide-financius-gh600.md)
+- [`../gh600/practice-questions.md`](../gh600/practice-questions.md)
+- [`../gh600/study-schedule-4-weeks.md`](../gh600/study-schedule-4-weeks.md)
 
 ---
 
@@ -48,11 +56,17 @@ Day start
                 "What did Claude do well / struggle with today?"
 ```
 
+Best pairing with the GH-600 pack:
+- use the GH-600 schedule for the day's primary study target
+- use this guide for the experiment and journal portions
+
 ---
 
 ## Weekly Study Plan
 
 ### Week 1 — Claude Code & Context
+
+If you already completed the Django migration and related review flows, treat most of this week as already partially covered. Use it as recall and reflection, not as your main exam-prep path.
 
 **Concept: How Claude Code works as an agent**
 
@@ -96,6 +110,9 @@ Your `CLAUDE.md` and skills are live prompt engineering examples.
 2. **Few-shot** — Show Claude 2 receipt examples, then ask it to normalize a 3rd. Observe pattern matching.
 
 3. **Constraint injection** — Add a rule to `CLAUDE.md`: *"Never add comments to Python files."* Verify Claude follows it immediately.
+
+Connection back to GH-600:
+- this week complements Domain 1 and Domain 2 by showing how policy and task routing shape execution behavior
 
 ---
 
@@ -200,6 +217,10 @@ print(data)
 - `max_tokens`: What happens if you set it too low?
 - Difference between `system` prompt and `messages[0]`
 
+Connection back to GH-600:
+- this week strengthens Domain 2 by making tool loops explicit rather than only observing them through Claude Code
+- it also supports Domain 5 when you start reasoning about coordinator and worker behavior in agent loops
+
 ---
 
 ### Week 4 — Model Families, Safety & Certification Review
@@ -229,6 +250,9 @@ Compare speed, accuracy, and verbosity.
 - [ ] Can I explain prompt caching and why it reduces cost?
 - [ ] Do I know the context window size for each model?
 - [ ] Can I describe 3 real-world use cases where Claude outperforms a simpler approach?
+
+Connection back to GH-600:
+- this week complements Domain 6 and final review by helping you reason about safe model choice, refusal behavior, and system-level controls
 
 ---
 
@@ -294,6 +318,16 @@ Your Android Financius app syncing to your Django backend is itself a study topi
 | [Anthropic docs — Models overview](https://docs.anthropic.com/en/docs/about-claude/models) | Model names, context windows, pricing |
 | Your `docs/phases/` folder | Case study: 6 phases of AI-assisted Django migration |
 | Your `.claude/commands/django-new.md` | Real example of a well-engineered skill/prompt |
+
+## Recommended Pairing Order
+
+Use this guide with the GH-600 pack in the following pattern:
+1. read the assigned GH-600 domain note for the day
+2. run the GH-600 lab or answer the matching practice questions
+3. come back here for one experiment or reflection task
+4. write the session note in [`journal.md`](journal.md)
+
+This keeps the exam path structured without losing the broader Claude learning loop.
 
 ---
 

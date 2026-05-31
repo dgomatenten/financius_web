@@ -1,89 +1,103 @@
-# Getting Started — How to Use Both Study Guides
+# Getting Started — How to Use the Study Materials
 
-## The Two Guides
+## The Two Tracks
 
-| Guide | Purpose |
+| Track | Purpose |
 |---|---|
-| [`claude-study-guide.md`](claude-study-guide.md) | Daily habit framework — journal + experiments |
-| [`certified-architect-foundations.md`](certified-architect-foundations.md) | Exam roadmap — domain by domain prep for the certification |
+| [`../gh600/study-guide-financius-gh600.md`](../gh600/study-guide-financius-gh600.md) | Primary GH-600 exam pack — domain notes, labs, references, questions, and schedule |
+| [`claude-study-guide.md`](claude-study-guide.md) | Broader Claude study track — daily habits, experiments, journal, and API/model practice |
 
-Run them **in parallel**, not sequentially.
+Use them together, but do not give them equal priority.
 
----
-
-## You've Already Completed Weeks 1–2
-
-The 6-phase Django migration you just finished covers the first two weeks of the general guide without you realizing it.
-
-| General guide week | What it covers | Your status |
-|---|---|---|
-| Week 1 — Claude Code & Context | Watch Claude read files, use tools, manage context | ✅ Done — 6-phase migration, /review, /django-new |
-| Week 2 — Prompt Engineering | Read CLAUDE.md, study skills, write a skill | ✅ Done — wrote django-new.md, live-edited CLAUDE.md |
-| Week 3 — Claude API & Tool Use | Call API, build tool use loop | ← **Start here** |
-| Week 4 — Models, Safety, Review | Model comparison, safety concepts | Next |
+- If your goal is GH-600 exam prep, start with the GH-600 pack.
+- If your goal is broader practical Claude and agent-engineering skill, use the Claude study guide as a daily companion.
 
 ---
 
-## How to Use Both Guides Together
+## What Is Completed Now
 
-```
-Daily (30 min)                        Weekly (focused study)
-──────────────────────────────        ──────────────────────────────────
-claude-study-guide.md                 certified-architect-foundations.md
+The repo now has a full GH-600 study pack under `docs/gh600/`.
 
-Morning: pick one experiment          Follow the 4-week exam schedule
-Evening: write one journal entry      Domain by domain, in order
-```
+That pack includes:
+- domain notes for all six GH-600 domains
+- repo-based labs for the highest-value practical domains
+- worked companion references for tools, orchestration, guardrails, memory, and evaluation
+- a question bank with answer key
+- a four-week day-by-day schedule
+
+This means the GH-600 path no longer depends on the older exam-roadmap files as its primary structure.
 
 ---
 
-## Concrete Starting Sequence
+## Recommended Starting Point
 
-### Day 1 — Write your first journal entry
-Open [`journal.md`](journal.md) and document the Django migration experience.
-You lived through Weeks 1–2 of the general guide — capture it now while it's fresh.
-The migration gave you direct experience with tool use loops, context management, and
-agentic patterns. That is 40% of the exam already.
+If you are starting today, use this order:
 
-### Day 2 — Run the prompt A/B test
-```bash
-pip install anthropic
-export ANTHROPIC_API_KEY=sk-ant-...
-python3 docs/study/experiments/prompt_ab_test.py
+1. Read [`../gh600/study-guide-financius-gh600.md`](../gh600/study-guide-financius-gh600.md).
+2. Follow [`../gh600/study-schedule-4-weeks.md`](../gh600/study-schedule-4-weeks.md).
+3. Use [`../gh600/practice-questions.md`](../gh600/practice-questions.md) after each domain.
+4. Use [`claude-study-guide.md`](claude-study-guide.md) as a parallel daily practice track.
+5. Record session notes in [`journal.md`](journal.md).
+
+If you are short on time, start with the GH-600 pack's Domain 2, Domain 4, and Domain 5 materials first.
+
+---
+
+## How To Use Both Tracks Together
+
 ```
-Write what you observed in the journal. This covers exam Domain 4 (Prompt Engineering) hands-on.
+Daily practice track                    Exam-prep track
+──────────────────────────────          ───────────────────────────────────────
+claude-study-guide.md                   docs/gh600/study-guide-financius-gh600.md
 
-### Day 3–4 — Read the Agent SDK docs
-This is your biggest gap. You've seen Claude Code *use* tools, but the exam tests whether
-you can *design* multi-agent systems with `AgentDefinition`, hooks, and the `Task` tool.
-These are not covered by your migration experience yet.
-
-- [Claude Agent SDK — Overview](https://platform.claude.com/docs/en/agent-sdk/overview)
-- [Claude Agent SDK — Hooks](https://platform.claude.com/docs/en/agent-sdk/hooks)
-- [Claude Agent SDK — Subagents](https://platform.claude.com/docs/en/agent-sdk/subagents)
-
-### Day 5 — Run the caching experiment + read MCP docs
-```bash
-python3 docs/study/experiments/cached_categorizer.py
+Run one experiment                      Follow the 4-week schedule
+Write one journal note                  Read one domain note or lab
+Observe tool use in real work           Answer practice questions
 ```
-Then read the MCP docs. You already have `.mcp.json` awareness from the project — extend it.
 
-- [Model Context Protocol — Tools](https://modelcontextprotocol.io/docs/concepts/tools)
-- [MCP — Resources](https://modelcontextprotocol.io/docs/concepts/resources)
+The point is not to choose one or the other. The point is to let the GH-600 pack give you structure while the Claude guide gives you repetition and practical experimentation.
 
-### Day 6–7 — Take the practice test
-Take the community practice test to find your weak domains before planning the rest of the month:
-[practical_test_en.html](https://github.com/paullarionov/claude-certified-architect/blob/main/practical_test_en.html)
+---
 
-The practice test results tell you which of the 5 domains needs more study time.
-Adjust the 4-week schedule in `certified-architect-foundations.md` accordingly.
+## Concrete Start Sequence
+
+### Day 1
+- Read [`../gh600/study-guide-financius-gh600.md`](../gh600/study-guide-financius-gh600.md)
+- Skim [`../gh600/study-schedule-4-weeks.md`](../gh600/study-schedule-4-weeks.md)
+- Write one journal entry in [`journal.md`](journal.md) about the Django migration as a study asset
+
+### Day 2
+- Read the GH-600 Domain 2 note and run the Domain 2 lab
+- Then run one experiment from [`claude-study-guide.md`](claude-study-guide.md)
+
+### Day 3
+- Read the GH-600 Domain 4 note and companion report
+- Answer the Domain 4 section in [`../gh600/practice-questions.md`](../gh600/practice-questions.md)
+
+### Day 4
+- Read the GH-600 Domain 5 note and orchestration reference
+- Draft one planner artifact and one reviewer artifact for a simulated repo task
+
+### Day 5
+- Use the Claude study guide for one API or model experiment
+- Review your wrong answers from the GH-600 question bank
+
+This sequence gets you into the new pack immediately while preserving the broader learning loop.
+
+---
+
+## What Not To Do
+
+- Do not treat the older roadmap documents as the main entry point if your goal is GH-600 execution practice.
+- Do not start the broader Claude guide from Week 1 as if the migration experience never happened.
+- Do not postpone practice questions until the very end; use them after each domain.
 
 ---
 
 ## Summary
 
-- **Do NOT** start `claude-study-guide.md` from Week 1 — you've already done it.
-- **Do** use `claude-study-guide.md` as a daily ritual: one experiment + one journal entry per session.
-- **Do** follow `certified-architect-foundations.md` domain by domain for the exam.
-- **Start today** with the journal entry — the migration is your Week 1–2 material.
-- **Biggest gap:** Agent SDK (AgentDefinition, hooks, Task tool) — read those docs first.
+- Start with [`../gh600/study-guide-financius-gh600.md`](../gh600/study-guide-financius-gh600.md).
+- Use [`../gh600/study-schedule-4-weeks.md`](../gh600/study-schedule-4-weeks.md) as the main exam-prep path.
+- Use [`../gh600/practice-questions.md`](../gh600/practice-questions.md) continuously, not only at the end.
+- Keep [`claude-study-guide.md`](claude-study-guide.md) as the broader daily-practice companion.
+- Keep capturing observations in [`journal.md`](journal.md).

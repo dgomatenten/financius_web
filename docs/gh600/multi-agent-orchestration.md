@@ -11,6 +11,16 @@ This spec establishes:
 - failure handling and recovery
 - observability requirements
 
+## What GH-600 Is Testing Here
+
+This domain is not satisfied by saying "use multiple agents."
+
+GH-600 is testing whether you can:
+- justify why work is split across roles
+- preserve enough structure in handoffs that the next role does not have to guess
+- detect when a workflow is moving quickly but becoming less trustworthy
+- decide when the coordinator should stop progress and escalate
+
 ---
 
 ## Orchestration Pattern
@@ -35,6 +45,9 @@ Coordinator responsibilities:
 - gate transitions between phases
 - resolve conflicts across outputs
 - escalate when policy/risk thresholds are met
+
+Study note:
+- the coordinator is not just a dispatcher; it is the control point that keeps planning, implementation, and review from collapsing together
 
 ---
 
@@ -86,6 +99,14 @@ Hard constraints:
 - no code modification during review phase
 - must provide evidence references
 
+## Why These Role Boundaries Matter
+
+If the planner edits code, you lose a clean planning artifact.
+If the implementer changes scope, you lose trustworthy execution boundaries.
+If the reviewer edits code while reviewing, you lose an independent assessment surface.
+
+That separation is the real subject of the exam, not the number of agents.
+
 ---
 
 ## Mandatory Handoff Artifact Schema
@@ -116,6 +137,32 @@ escalation_required: true|false
 Store artifacts under:
 - `docs/gh600/runs/<task_id>/`
 
+## Worked Handoff Example
+
+```yaml
+task_id: GH600-20260531-01
+phase: planning
+owner: planner
+inputs:
+  - docs/gh600/domain-4-evaluation-and-tuning.md
+  - backend/tests/dj/contract/test_envelope_contract.py
+outputs:
+  - docs/gh600/runs/GH600-20260531-01/planner.md
+decisions:
+  - limit scope to envelope-related docs and tests
+risks:
+  - changing API views would escalate contract risk
+validation:
+  commands:
+    - pytest tests/dj/contract/test_envelope_contract.py -q
+  results:
+    - not yet run
+next_action: implementer may edit docs and tests only
+escalation_required: false
+```
+
+This example is intentionally narrow. A good handoff tells the next role what is authorized, not just what is desired.
+
 ---
 
 ## Conflict Detection Rules
@@ -130,6 +177,21 @@ Conflict signals to monitor:
 - changed files outside approved list
 - failing contract tests after implementation
 - contradictory recommendations between planner and reviewer
+
+## Worked Conflict Scenario
+
+Scenario:
+- planner approves docs and tests only
+- implementer edits an API view as well
+- reviewer flags contract risk because the changed file could alter response behavior
+
+Correct coordinator response:
+1. freeze further writes
+2. compare actual changed files against approved scope
+3. prioritize contract correctness over delivery speed
+4. either narrow the implementation back to approved scope or escalate for a new plan
+
+This is the kind of conflict reasoning GH-600 is likely to reward.
 
 ---
 
@@ -169,6 +231,10 @@ Step sequence:
 - symptom: regressions in contract/security/data integrity
 - action: revert affected change set and reopen planning phase
 
+Why this matters for study:
+- the workflow must be able to move backward cleanly when correctness is at risk
+- a "multi-agent" label is meaningless if the system cannot recover from a bad handoff or invalid execution path
+
 ---
 
 ## Observability Requirements
@@ -185,6 +251,14 @@ Minimum evidence for go decision:
 - backend tests pass (`pytest tests/dj -q`)
 - required contract checks pass
 - no unresolved critical findings
+
+## What A Strong Exam Answer Sounds Like
+
+For this repo, a strong answer would say:
+- use planner, implementer, and reviewer roles with distinct permissions
+- require a coordinator to freeze work on scope or contract conflict
+- preserve handoff artifacts under a predictable run folder
+- rely on evidence, not role confidence, for go or no-go decisions
 
 ---
 
@@ -223,3 +297,10 @@ Expected deliverables:
 - final recommendation
 
 This establishes direct GH-600 competency evidence for multi-agent coordination.
+
+## Self-Check
+
+1. Why is a coordinator not interchangeable with a planner?
+2. What information must be present for a handoff to be safe?
+3. When should a workflow freeze instead of continuing with a reviewer warning?
+4. Why is "multiple agents for speed" an incomplete orchestration answer?
