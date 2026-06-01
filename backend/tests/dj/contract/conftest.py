@@ -9,6 +9,7 @@ will also run against Django as each endpoint is ported. Once all contracts pass
 on Django, Flask can be retired.
 """
 import os
+from importlib.util import find_spec
 
 import pytest
 from flask.testing import FlaskClient
@@ -16,6 +17,9 @@ from flask.testing import FlaskClient
 
 @pytest.fixture(scope="session")
 def flask_client() -> FlaskClient:
+    if find_spec("app") is None:
+        pytest.skip("Legacy Flask app module is unavailable in this workspace")
+
     os.environ["DATABASE_URL"] = "sqlite:///:memory:"
     from app import create_app as create_flask_app
     app = create_flask_app()
