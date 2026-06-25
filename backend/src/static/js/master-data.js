@@ -8,7 +8,7 @@ function setMasterDataJson(id, payload) {
 function redirectOnUnauthorized(result) {
   if (result.status === 401) {
     clearSessionTokens();
-    window.location.href = "/login";
+    redirectToLogin();
     return true;
   }
   return false;

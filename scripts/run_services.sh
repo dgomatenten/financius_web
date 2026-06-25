@@ -14,7 +14,7 @@ if [[ -f "$ROOT_DIR/.env" ]]; then
   set -o allexport
 fi
 
-BACKEND_PORT="${BACKEND_PORT:-5000}"
+BACKEND_PORT="${BACKEND_PORT:-8001}"
 
 mkdir -p "$RUN_DIR" "$LOG_DIR"
 
@@ -30,10 +30,10 @@ Usage:
 
 Defaults:
   Mode defaults to: flask
-  Port defaults to: BACKEND_PORT=5000 (or from .env)
+  Port defaults to: BACKEND_PORT=8001 (or from .env)
 
 Notes:
-  - local and flask are the same mode (single Flask service for UI + API)
+  - local and flask are the same mode (single Django service for UI + API)
 
 Examples:
   ./scripts/run_services.sh start
@@ -99,7 +99,7 @@ is_financius_backend_pid() {
   cwd="$(pid_cwd_for_pid "$pid")"
 
   if [[ "$cmdline" == *"$ROOT_DIR"* ]] || [[ "$cwd" == "$ROOT_DIR"* ]]; then
-    [[ "$cmdline" == *"backend/src/app.py"* ]] || [[ "$cmdline" == *"flask run"* ]]
+    [[ "$cmdline" == *"manage.py runserver"* ]] || [[ "$cmdline" == *"flask run"* ]]
     return $?
   fi
 
@@ -126,7 +126,7 @@ kill_if_financius_backend() {
   echo "Skipping PID $pid: not recognized as a Financius-owned backend process"
 }
 
-start_flask() {
+start_local() {
   if port_in_use "$BACKEND_PORT"; then
     echo "Cannot start backend: port $BACKEND_PORT is already in use."
     print_port_owner "$BACKEND_PORT"
@@ -144,18 +144,18 @@ start_flask() {
     rm -f "$BACKEND_PID_FILE"
   fi
 
-  echo "Starting backend (Flask single-service mode)..."
+  echo "Starting backend (Django single-service mode)..."
   if [[ -d "$ROOT_DIR/.venv" ]]; then
     (
-      cd "$ROOT_DIR"
-      source .venv/bin/activate
-      FLASK_APP=app:create_app FLASK_ENV=development PYTHONPATH=backend/src nohup flask run --host=0.0.0.0 --port="$BACKEND_PORT" >"$LOG_DIR/backend.log" 2>&1 &
+      cd "$ROOT_DIR/backend"
+      source "$ROOT_DIR/.venv/bin/activate"
+      nohup python3 manage.py runserver 0.0.0.0:"$BACKEND_PORT" >"$LOG_DIR/backend.log" 2>&1 &
       echo $! >"$BACKEND_PID_FILE"
     )
   else
     (
-      cd "$ROOT_DIR"
-      FLASK_APP=app:create_app FLASK_ENV=development PYTHONPATH=backend/src nohup flask run --host=0.0.0.0 --port="$BACKEND_PORT" >"$LOG_DIR/backend.log" 2>&1 &
+      cd "$ROOT_DIR/backend"
+      nohup python3 manage.py runserver 0.0.0.0:"$BACKEND_PORT" >"$LOG_DIR/backend.log" 2>&1 &
       echo $! >"$BACKEND_PID_FILE"
     )
   fi
@@ -167,7 +167,7 @@ start_flask() {
     echo "Backend started (PID $pid)"
     echo "Log: $LOG_DIR/backend.log"
     echo ""
-    echo "Flask single-service mode is running:"
+    echo "Django single-service mode is running:"
     echo "- App + API: http://localhost:$BACKEND_PORT"
     echo "- Health:    http://localhost:$BACKEND_PORT/api/v1/health"
   else
@@ -253,7 +253,7 @@ show_logs() {
       tail -n 100 "$LOG_DIR/backend.log"
       ;;
     *)
-      echo "Only backend logs are available in Flask-only mode."
+      echo "Only backend logs are available in local app mode."
       exit 1
       ;;
   esac
@@ -265,7 +265,7 @@ MODE="${2:-flask}"
 case "$ACTION" in
   start)
     case "$MODE" in
-      local|flask) start_flask ;;
+      local|flask) start_local ;;
       docker) start_docker ;;
       *) echo "Unknown mode: $MODE"; usage; exit 1 ;;
     esac
@@ -281,7 +281,7 @@ case "$ACTION" in
     case "$MODE" in
       local|flask)
         stop_flask
-        start_flask
+        start_local
         ;;
       docker)
         stop_docker

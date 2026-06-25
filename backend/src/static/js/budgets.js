@@ -48,7 +48,7 @@ async function loadBudgets() {
   const result = await sessionProtectedFetch(`/api/v1/budgets?month=${encodeURIComponent(month)}`);
   if (result.status === 401) {
     clearSessionTokens();
-    window.location.href = "/login";
+    redirectToLogin();
     return;
   }
   setBudgetJson("budgetsOut", result);
@@ -59,7 +59,7 @@ async function loadBudgetProgress() {
   const result = await sessionProtectedFetch(`/api/v1/budgets/progress?month=${encodeURIComponent(month)}`);
   if (result.status === 401) {
     clearSessionTokens();
-    window.location.href = "/login";
+    redirectToLogin();
     return;
   }
   setBudgetJson("budgetProgressOut", result);
@@ -99,7 +99,7 @@ if (budgetForm) {
 
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
 

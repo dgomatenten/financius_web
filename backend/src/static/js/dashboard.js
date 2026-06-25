@@ -28,7 +28,7 @@ if (syncBtn) {
   syncBtn.addEventListener("click", async () => {
     const result = await sessionProtectedFetch("/api/v1/sync/status");
     if (result.status === 401) {
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setJson("syncOut", result);

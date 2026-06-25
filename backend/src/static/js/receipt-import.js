@@ -40,7 +40,7 @@ if (amazonImportForm) {
 
     if (response.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
 

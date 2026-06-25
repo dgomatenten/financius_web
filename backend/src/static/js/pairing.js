@@ -11,7 +11,7 @@ if (pairingPayloadBtn) {
     const result = await sessionProtectedFetch("/api/v1/pairing/qr");
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setPairingJson("pairingPayloadOut", result);

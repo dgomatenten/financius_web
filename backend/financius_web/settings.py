@@ -58,10 +58,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "financius_web.wsgi.application"
 
-# Use DJANGO_DATABASE_URL for Django; falls back to a dedicated dev SQLite file.
-# DATABASE_URL is reserved for the Flask stack (relative path, not usable here).
+def _normalize_sqlite_url(db_url: str) -> str:
+    prefix = "sqlite:///"
+    if not db_url.startswith(prefix):
+        return db_url
+
+    path_part = db_url[len(prefix):]
+    if not path_part.startswith("./"):
+        return db_url
+
+    abs_path = (BASE_DIR.parent / path_part[2:]).resolve()
+    return f"{prefix}{abs_path}"
+
+
 _default_db = f"sqlite:///{BASE_DIR.parent / 'data' / 'django_dev.db'}"
-_db_url = os.environ.get("DJANGO_DATABASE_URL", _default_db)
+_db_url = os.environ.get("DJANGO_DATABASE_URL") or os.environ.get("DATABASE_URL") or _default_db
+_db_url = _normalize_sqlite_url(_db_url)
 DATABASES = {"default": dj_database_url.parse(_db_url, conn_max_age=600)}
 
 PASSWORD_HASHERS = [

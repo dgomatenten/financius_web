@@ -55,7 +55,7 @@ async function loadReceipts() {
   const result = await sessionProtectedFetch(path);
   if (result.status === 401) {
     clearSessionTokens();
-    window.location.href = "/login";
+    redirectToLogin();
     return;
   }
   setReceiptJson("receiptsOut", result);
@@ -107,7 +107,7 @@ if (bulkForm) {
     });
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setReceiptJson("bulkOut", result);
@@ -127,7 +127,7 @@ if (loadReceiptDetailBtn) {
     const result = await sessionProtectedFetch(`/api/v1/receipts/${receiptId}`);
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setReceiptJson("receiptDetailOut", result);
@@ -153,7 +153,7 @@ if (receiptEditForm) {
     });
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setReceiptJson("receiptEditOut", result);

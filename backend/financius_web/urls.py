@@ -23,9 +23,12 @@ class LoginPageView(TemplateView):
 
     def get_context_data(self, **kwargs: object) -> dict:
         ctx = super().get_context_data(**kwargs)
-        base_url = settings.API_BASE_URL.rstrip("/")
         ctx["google_client_id"] = settings.GOOGLE_CLIENT_ID
-        ctx["google_redirect_uri"] = f"{base_url}/login"
+        if hasattr(self, "request") and self.request is not None:
+            ctx["google_redirect_uri"] = self.request.build_absolute_uri("/login")
+        else:
+            base_url = settings.API_BASE_URL.rstrip("/")
+            ctx["google_redirect_uri"] = f"{base_url}/login"
         return ctx
 
 

@@ -11,7 +11,7 @@ if (syncStatusBtn) {
     const result = await sessionProtectedFetch("/api/v1/sync/status");
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setSyncJson("syncStatusOut", result);
@@ -47,7 +47,7 @@ if (sampleSyncBtn) {
     });
     if (result.status === 401) {
       clearSessionTokens();
-      window.location.href = "/login";
+      redirectToLogin();
       return;
     }
     setSyncJson("sampleSyncOut", result);

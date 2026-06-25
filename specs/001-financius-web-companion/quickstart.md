@@ -89,7 +89,7 @@ docker compose -f infra/compose/docker-compose.yml exec backend pytest tests/con
   - `/api/v1` path entries found: 26
   - Envelope schema with required `{ data, error, meta }`: confirmed.
 
-## 9. Local Launcher (Flask-Only)
+## 9. Local Launcher
 
 Use the unified launcher for local development:
 

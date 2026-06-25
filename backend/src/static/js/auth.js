@@ -15,7 +15,7 @@ async function loginWithGoogleIdToken(idToken) {
   setSessionTokens(accessToken, refreshToken);
   setJson("googleOut", result);
   if (accessToken) {
-    window.location.href = "/dashboard";
+    window.location.href = getPostLoginRedirectTarget();
   }
 }
 
@@ -103,7 +103,7 @@ if (loginForm) {
     setSessionTokens(accessToken, refreshToken);
     setJson("loginOut", result);
     if (accessToken) {
-      window.location.href = "/dashboard";
+      window.location.href = getPostLoginRedirectTarget();
     }
   });
 }
@@ -123,7 +123,7 @@ if (registerForm) {
     setSessionTokens(accessToken, refreshToken);
     setJson("registerOut", result);
     if (accessToken) {
-      window.location.href = "/dashboard";
+      window.location.href = getPostLoginRedirectTarget();
     }
   });
 }

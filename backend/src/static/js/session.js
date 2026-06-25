@@ -46,6 +46,44 @@ function getRefreshToken() {
   return localStorage.getItem("refreshToken");
 }
 
+function isPublicAuthPath(path) {
+  return (
+    path === "/api/v1/auth/login" ||
+    path === "/api/v1/auth/register" ||
+    path === "/api/v1/auth/google" ||
+    path === "/api/v1/auth/refresh" ||
+    path === "/api/v1/auth/logout"
+  );
+}
+
+function sanitizeRedirectPath(path) {
+  if (!path || typeof path !== "string") {
+    return null;
+  }
+  if (!path.startsWith("/") || path.startsWith("//")) {
+    return null;
+  }
+  return path;
+}
+
+function buildLoginUrl(returnTo = `${window.location.pathname}${window.location.search}`) {
+  const loginUrl = new URL("/login", window.location.origin);
+  const safeReturnTo = sanitizeRedirectPath(returnTo);
+  if (safeReturnTo && safeReturnTo !== "/login") {
+    loginUrl.searchParams.set("returnTo", safeReturnTo);
+  }
+  return `${loginUrl.pathname}${loginUrl.search}`;
+}
+
+function redirectToLogin(returnTo) {
+  window.location.href = buildLoginUrl(returnTo);
+}
+
+function getPostLoginRedirectTarget() {
+  const returnTo = new URLSearchParams(window.location.search).get("returnTo");
+  return sanitizeRedirectPath(returnTo) || "/dashboard";
+}
+
 function setSessionTokens(accessToken, refreshToken) {
   if (accessToken) {
     localStorage.setItem("accessToken", accessToken);
@@ -100,7 +138,7 @@ async function sessionFetch(path, options = {}) {
   }
 
   const accessToken = getAccessToken();
-  if (accessToken) {
+  if (accessToken && !isPublicAuthPath(path)) {
     headers.Authorization = `Bearer ${accessToken}`;
   }
 

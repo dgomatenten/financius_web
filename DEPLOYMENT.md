@@ -71,7 +71,7 @@ ruff check backend/src backend/tests
 | `API_BASE_URL` | `http://localhost:5000` | `https://financius-web.onrender.com` | Used to build Google OAuth redirect URI |
 | `ALLOWED_ORIGINS` | `http://localhost:5000` | `https://financius-web.onrender.com` | CORS allowed origins |
 | `FLASK_ENV` | `development` | `production` | Enables/disables debug mode |
-| `BACKEND_PORT` | `5000` | — | Local port only; Render uses `PORT=10000` |
+| `BACKEND_PORT` | `8001` | — | Local port only; Render uses `PORT=10000` |
 | `QR_PAIRING_TOKEN_TTL_SECONDS` | `300` | `300` | Pairing token expiry in seconds |
 
 ### Generate secure random values

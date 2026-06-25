@@ -213,7 +213,7 @@ async function loadAnalytics() {
   const responses = [summaryRes, breakdownRes, calendarRes, yoyRes, blsRes, insightsRes];
   if (responses.some((r) => r.status === 401)) {
     clearSessionTokens();
-    window.location.href = "/login";
+    redirectToLogin();
     return;
   }
 
