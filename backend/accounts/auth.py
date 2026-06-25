@@ -18,17 +18,17 @@ class JWTAuthentication(BaseAuthentication):
         token = auth_header[7:]
         try:
             payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Token expired")
-        except jwt.InvalidTokenError:
-            raise AuthenticationFailed("Invalid token")
+        except jwt.ExpiredSignatureError as err:
+            raise AuthenticationFailed("Token expired") from err
+        except jwt.InvalidTokenError as err:
+            raise AuthenticationFailed("Invalid token") from err
         user_id = payload.get("sub")
         if not user_id:
-            raise AuthenticationFailed("Token missing sub claim")
+            raise AuthenticationFailed("User not found")
         try:
             user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            raise AuthenticationFailed("User not found")
+        except User.DoesNotExist as err:
+            raise AuthenticationFailed("User not found") from err
         return (user, token)
 
     def authenticate_header(self, request: object) -> str:

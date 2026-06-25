@@ -6,13 +6,11 @@ Usage: python log_to_obsidian.py "your activity message" --tag speckit
 
 import argparse
 import json
+import os
 import ssl
 import urllib.request
 from datetime import datetime
-from pathlib import Path
-import os
 
-OBSIDIAN_API = "https://127.0.0.1:27124"
 API_KEY = os.environ.get("OBSIDIAN_API_KEY", "")  # set in your .env
 
 def get_daily_note_path() -> str:

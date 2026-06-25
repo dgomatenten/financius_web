@@ -298,7 +298,9 @@ class Command(BaseCommand):
         self._bulk(PaymentCard, objs, batch)
         self._log("payment_cards", len(rows), len(objs), 0, 0)
 
-    def _migrate_category_mappings(self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap) -> None:
+    def _migrate_category_mappings(
+        self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap
+    ) -> None:
         rows = _rows(conn, "category_mappings")
         keys = set(rows[0].keys()) if rows else set()
         objs = [
@@ -325,7 +327,9 @@ class Command(BaseCommand):
         keys = set(rows[0].keys())
 
         # Build sets of valid FK targets to avoid FK violations from orphaned references
-        from ledger.models import Category as _Cat, PaymentCard as _Card, Shop as _Shop
+        from ledger.models import Category as _Cat
+        from ledger.models import PaymentCard as _Card
+        from ledger.models import Shop as _Shop
         valid_shops = set(str(x) for x in _Shop.objects.values_list("id", flat=True))
         valid_cats = set(str(x) for x in _Cat.objects.values_list("id", flat=True))
         valid_cards = set(str(x) for x in _Card.objects.values_list("id", flat=True))
@@ -366,7 +370,11 @@ class Command(BaseCommand):
                 name=r["name"],
                 quantity=_float(r["quantity"], 1.0),
                 unit_price=_float(r["unit_price"]),
-                line_total=_float(r["line_total"]) if "line_total" in keys else _float(r["quantity"], 1.0) * _float(r["unit_price"]),
+                line_total=(
+                    _float(r["line_total"])
+                    if "line_total" in keys
+                    else _float(r["quantity"], 1.0) * _float(r["unit_price"])
+                ),
             )
             for r in rows
         ]
@@ -403,9 +411,17 @@ class Command(BaseCommand):
                 category_id=r["category_id"] if "category_id" in keys else None,
                 mode=r["mode"],
                 amount=_float(r["amount"]),
-                adjustment_pct=_int(r["adjustment_pct"]) if "adjustment_pct" in keys and r["adjustment_pct"] is not None else None,
-                rollover_enabled=_bool(r["rollover_enabled"]) if "rollover_enabled" in keys else False,
-                rollover_balance=_float(r["rollover_balance"]) if "rollover_balance" in keys else 0.0,
+                adjustment_pct=(
+                    _int(r["adjustment_pct"])
+                    if "adjustment_pct" in keys and r["adjustment_pct"] is not None
+                    else None
+                ),
+                rollover_enabled=(
+                    _bool(r["rollover_enabled"]) if "rollover_enabled" in keys else False
+                ),
+                rollover_balance=(
+                    _float(r["rollover_balance"]) if "rollover_balance" in keys else 0.0
+                ),
             )
             for r in rows
         ]
@@ -453,7 +469,9 @@ class Command(BaseCommand):
         self._bulk(SyncEvent, objs, batch)
         self._log("sync_events", len(rows), len(objs), 0, 0)
 
-    def _migrate_recurring_templates(self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap) -> None:
+    def _migrate_recurring_templates(
+        self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap
+    ) -> None:
         rows = _rows(conn, "recurring_expense_templates")
         objs = [
             RecurringExpenseTemplate(
@@ -484,7 +502,9 @@ class Command(BaseCommand):
         self._bulk(RecurringExpenseOccurrence, objs, batch)
         self._log("recurring_expense_occurrences", len(rows), len(objs), 0, 0)
 
-    def _migrate_amortization_rules(self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap) -> None:
+    def _migrate_amortization_rules(
+        self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap
+    ) -> None:
         rows = _rows(conn, "amortization_rules")
         keys = set(rows[0].keys()) if rows else set()
         objs = [
