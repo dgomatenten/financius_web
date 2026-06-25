@@ -488,7 +488,7 @@ class TestWerkzeugPasswordHasher:
     def test_wrap_werkzeug_hash_prefixes_correctly(self) -> None:
         wz = "pbkdf2:sha256:600000$abc$def"
         wrapped = wrap_werkzeug_hash(wz)
-        assert wrapped.startswith("werkzeug_pbkdf2_sha256$")
+        assert wrapped.startswith("werkzeug$")
         assert wrapped.endswith(wz)
 
     def test_wrap_none_returns_unusable(self) -> None:
@@ -513,7 +513,7 @@ class TestWerkzeugPasswordHasher:
 
     def test_hasher_must_update_always_true(self) -> None:
         hasher = WerkzeugPasswordHasher()
-        assert hasher.must_update("werkzeug_pbkdf2_sha256$pbkdf2:sha256:600000$s$h") is True
+        assert hasher.must_update("werkzeug$pbkdf2:sha256:600000$s$h") is True
 
 
 # ── Refresh token migration ───────────────────────────────────────────────────

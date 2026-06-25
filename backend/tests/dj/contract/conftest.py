@@ -10,13 +10,16 @@ on Django, Flask can be retired.
 """
 import os
 from importlib.util import find_spec
+from typing import TYPE_CHECKING
 
 import pytest
-from flask.testing import FlaskClient
+
+if TYPE_CHECKING:
+    from flask.testing import FlaskClient
 
 
 @pytest.fixture(scope="session")
-def flask_client() -> FlaskClient:
+def flask_client() -> "FlaskClient":
     if find_spec("app") is None:
         pytest.skip("Legacy Flask app module is unavailable in this workspace")
 
