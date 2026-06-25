@@ -10,9 +10,9 @@ from __future__ import annotations
 import sqlite3
 import tempfile
 import uuid
+from collections.abc import Generator
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Generator
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -21,7 +21,7 @@ from werkzeug.security import generate_password_hash
 
 from accounts.hashers import WerkzeugPasswordHasher, wrap_werkzeug_hash
 from accounts.models import RefreshToken
-from ledger.models import Category, PaymentCard, Receipt, ReceiptLineItem, Shop
+from ledger.models import Category, Receipt, ReceiptLineItem, Shop
 
 User = get_user_model()
 

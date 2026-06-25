@@ -12,7 +12,6 @@ import pytest
 
 from tests.dj.contract.conftest import assert_envelope, assert_shapes_match
 
-
 # ── Flask envelope baseline ──────────────────────────────────────────────────
 
 class TestFlaskEnvelopeBaseline:

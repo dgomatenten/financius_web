@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -16,7 +16,7 @@ from ledger.models import (
 
 User = get_user_model()
 
-NOW = datetime(2024, 6, 1, tzinfo=timezone.utc)
+NOW = datetime(2024, 6, 1, tzinfo=UTC)
 
 
 # ── Budget ────────────────────────────────────────────────────────────────────

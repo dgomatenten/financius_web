@@ -125,7 +125,9 @@ class TestLoginView:
 class TestRefreshView:
     def test_valid_refresh_returns_new_access_token(self, api_client: APIClient, user: User) -> None:
         refresh_token = _make_refresh_token(user.pk)
-        RefreshToken.objects.create(user=user, token_hash=__import__("hashlib").sha256(refresh_token.encode()).hexdigest())
+        import hashlib
+
+        RefreshToken.objects.create(user=user, token_hash=hashlib.sha256(refresh_token.encode()).hexdigest())
         r = api_client.post("/api/v1/auth/refresh", {"refreshToken": refresh_token}, format="json")
         assert r.status_code == 200
         body = r.json()
@@ -135,7 +137,9 @@ class TestRefreshView:
 
     def test_refresh_backward_compat_aliases(self, api_client: APIClient, user: User) -> None:
         refresh_token = _make_refresh_token(user.pk)
-        RefreshToken.objects.create(user=user, token_hash=__import__("hashlib").sha256(refresh_token.encode()).hexdigest())
+        import hashlib
+
+        RefreshToken.objects.create(user=user, token_hash=hashlib.sha256(refresh_token.encode()).hexdigest())
         r = api_client.post("/api/v1/auth/refresh", {"refreshToken": refresh_token}, format="json")
         body = r.json()
         # Android clients parse top-level aliases too
