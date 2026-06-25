@@ -13,6 +13,16 @@ Primary source used:
 - Microsoft Learn GH-600 study guide (last updated 2026-05-13):
   https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/gh-600
 
+Additional source updates (GitHub Docs):
+- Preparing to use custom agents in your organization:
+  https://docs.github.com/en/copilot/how-tos/administer-copilot/manage-for-organization/prepare-for-custom-agents
+- Custom agents and sub-agent orchestration (Copilot SDK):
+  https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/custom-agents
+- About GitHub Copilot Memory:
+  https://docs.github.com/en/copilot/concepts/agents/copilot-memory
+- Implementation planner custom agent:
+  https://docs.github.com/en/copilot/tutorials/customization-library/custom-agents/implementation-planner
+
 ---
 
 ## How To Use This Pack
@@ -82,6 +92,13 @@ Exam tip: Domain 2 carries the highest weight, but Domains 4 and 5 are where rep
 - [practice-questions.md](practice-questions.md)
 - [study-schedule-4-weeks.md](study-schedule-4-weeks.md)
 
+### GitHub Docs integration focus
+- Custom-agent repo governance with `.github` / `.github-private` organization setup
+- Per-agent tool scoping, controlled inference, and MCP server attachment
+- Sub-agent lifecycle observability (`selected`, `started`, `completed`, `failed`)
+- Copilot Memory scoping (repository facts vs user preferences), validation, and retention
+- Plan-first custom-agent profiles using implementation-planner structure
+
 ### Planned next additions
 - alignment updates for the broader study docs under `docs/study/`
 
@@ -106,6 +123,9 @@ Exam tip: Domain 2 carries the highest weight, but Domains 4 and 5 are where rep
 ### Why this matters here
 This repo already separates policy, execution, and validation. That is the core GH-600 architecture pattern even before any multi-agent system is added.
 
+GitHub docs reinforcement:
+- The implementation-planner pattern emphasizes explicit scope, phased delivery, and risk recording before mutation begins.
+
 ### Study action
 - Lesson note: [domain-1-architecture-and-sdlc.md](domain-1-architecture-and-sdlc.md)
 
@@ -128,6 +148,10 @@ This repo already separates policy, execution, and validation. That is the core 
 
 ### Why this matters here
 Financius already shows tool allow-lists, deny rules, CI-scoped execution, containerized environment control, and a project `.mcp.json` with filesystem, PostgreSQL, GitHub, browser, Docker, and URL-fetch MCP servers. The main next gap is validating and governing that MCP surface over time, especially token scope, runtime-impact boundaries, and policy drift.
+
+GitHub docs reinforcement:
+- Custom agent configs (`name`, `description`, `prompt`, `tools`, `infer`, `mcpServers`, `skills`) should be treated as first-class governance artifacts.
+- Least privilege should be explicit: per-agent tool lists and selective delegation behavior.
 
 ### Study materials
 - Lesson note: [domain-2-tools-and-environment.md](domain-2-tools-and-environment.md)
@@ -152,6 +176,9 @@ Financius already shows tool allow-lists, deny rules, CI-scoped execution, conta
 
 ### Why this matters here
 The migration command is an unusually strong study example because it is explicitly idempotent, supports dry-run behavior, and translates state between two systems without repeating destructive work.
+
+GitHub docs reinforcement:
+- Copilot Memory distinguishes repository facts from user preferences; memory entries should be validated before use to avoid stale behavior.
 
 ### Study action
 - Lesson note: [domain-3-memory-state-execution.md](domain-3-memory-state-execution.md)
@@ -197,6 +224,9 @@ The repo already has contract-level and unit-level checks that can be used as ev
 
 ### Why this matters here
 The repo has role routing and pipeline stages already, but GH-600 expects explicit coordinator logic, handoff artifacts, and conflict handling. That is why this domain needs both a lesson note and a lab.
+
+GitHub docs reinforcement:
+- Sub-agent lifecycle events are critical observability signals for coordination (`selected`, `started`, `completed`, `failed`).
 
 ### Study materials
 - Lesson note: [domain-5-multi-agent-coordination.md](domain-5-multi-agent-coordination.md)
@@ -302,5 +332,7 @@ If time is limited before the exam, do these first:
 - `docs/study/claude-study-guide.md`
 - `docs/study/certified-architect-foundations.md`
 - `docs/claude-folder-guide.md`
+- `docs/gh600/interactive-daily-gh600-study-plan.md`
+- `docs/gh600/daily-study-log-template.md`
 
 Use this GH-600 guide as the practical layer on top of those foundations.

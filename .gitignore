@@ -14,6 +14,7 @@ dist/
 build/
 *.egg-info/
 backend/staticfiles/
+gh600_study_app/
 
 # Environment and local data
 .env

@@ -258,6 +258,48 @@ Use this quick rubric:
 - `16-20` correct: strong repo-specific GH-600 readiness
 - `11-15` correct: solid foundation, but revisit the weaker domain sections
 - `6-10` correct: reread the domain notes and rerun the labs before more question practice
+
+---
+
+## GitHub Docs Update Drill
+
+Use this section after reviewing the new links in [listmsweb.md](listmsweb.md).
+
+### Questions
+
+1. In custom agent configuration, what combination most directly enforces least privilege and safe delegation?
+
+2. Why might you set `infer: false` for a custom agent?
+
+3. What does `defaultAgent.excludedTools` accomplish in an orchestrated session?
+
+4. Where should organization-level custom agents live so they are available org-wide?
+
+5. What are the two primary Copilot Memory classes and how do their scopes differ?
+
+6. Why does memory validation against citations/current state matter before applying a stored fact?
+
+7. What is the planning benefit of an implementation-planner agent profile that forces assumptions, constraints, and risks sections?
+
+8. Which sub-agent lifecycle events are most useful for auditing orchestration behavior?
+
+### Answer Key And Rationale
+
+1. Explicit per-agent tool lists plus constrained delegation behavior (for example, controlled inference for risky agents). This enforces practical least privilege.
+
+2. To prevent automatic invocation of high-risk or specialized agents, so they only run when explicitly requested.
+
+3. It hides selected tools from the default/main agent while keeping them available to custom sub-agents that are explicitly configured for them.
+
+4. In the organization `.github` or `.github-private` repository `agents` directory.
+
+5. Repository-level facts and user-level preferences. Repository facts are repository-scoped; user preferences are tied to the initiating user.
+
+6. It prevents stale or invalid memory entries from driving agent behavior after code or context changes.
+
+7. It creates inspectable, pre-execution governance: scope, risk, and dependencies are explicit before code mutation starts.
+
+8. `subagent.selected`, `subagent.started`, `subagent.completed`, and `subagent.failed` (optionally `subagent.deselected`) are the core lifecycle signals.
 - `0-5` correct: start again from the hub and study the worked examples before testing yourself further
 
 For higher-value review, do not only count wrong answers. Write down why your chosen answer was wrong and which repo artifact should have led you to the stronger answer.

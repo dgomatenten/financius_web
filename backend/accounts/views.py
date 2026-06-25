@@ -12,6 +12,7 @@ from urllib.request import urlopen
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -135,9 +136,15 @@ class GoogleLoginView(APIView):
                 user.google_sub = google_sub
                 user.save(update_fields=["google_sub"])
             else:
-                user = User.objects.create_user(username=email, email=email, google_sub=google_sub)
-                user.set_unusable_password()
-                user.save(update_fields=["password"])
+                try:
+                    user = User.objects.create_user(username=email, email=email, google_sub=google_sub)
+                except IntegrityError:
+                    user = (
+                        User.objects.filter(google_sub=google_sub).first()
+                        or User.objects.filter(email=email).first()
+                    )
+                    if user is None:
+                        return Response(_err("SERVER_ERROR", "Unable to create user account"), status=500)
 
         logger.info("google_login user_id=%s email=%s", user.pk, email)
         return Response(_ok(_issue_tokens(user)))
@@ -172,11 +179,15 @@ class RefreshView(APIView):
                 logger.warning("refresh token fallback without user row for sub=%s", user_id)
 
         try:
-            _email = User.objects.get(pk=user_id).email
+            user = User.objects.get(pk=user_id)
+            user_data = {"id": str(user.pk), "email": user.email}
+            _email = user.email
         except User.DoesNotExist:
+            user_data = None
             _email = ""
         access_token = _issue_access_token(user_id, _email)
         data = {
+            "user": user_data,
             "accessToken": access_token,
             "refreshToken": token,
             "expiresIn": settings.ACCESS_TOKEN_TTL_SECONDS,
