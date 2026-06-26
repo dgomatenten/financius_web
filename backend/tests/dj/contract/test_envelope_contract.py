@@ -124,6 +124,20 @@ class TestDjangoEnvelopeContract:
         assert_envelope(body)
         assert body["error"] is not None
 
+    def test_sync_auth_error_without_trailing_slash_returns_envelope(self, django_client) -> None:
+        response = django_client.post("/api/v1/sync", {}, format="json")
+        assert response.status_code != 500
+        body = response.json()
+        assert_envelope(body)
+        assert body["error"] is not None
+
+    def test_sync_status_without_trailing_slash_returns_envelope(self, django_client) -> None:
+        response = django_client.get("/api/v1/sync/status")
+        assert response.status_code != 500
+        body = response.json()
+        assert_envelope(body)
+        assert body["error"] is not None
+
     def test_master_data_shops_auth_error_returns_envelope(self, django_client) -> None:
         body = django_client.get("/api/v1/master-data/shops/").json()
         assert_envelope(body)
