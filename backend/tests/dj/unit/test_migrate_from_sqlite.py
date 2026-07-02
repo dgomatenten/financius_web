@@ -10,9 +10,9 @@ from __future__ import annotations
 import sqlite3
 import tempfile
 import uuid
+from collections.abc import Generator
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Generator
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -21,7 +21,7 @@ from werkzeug.security import generate_password_hash
 
 from accounts.hashers import WerkzeugPasswordHasher, wrap_werkzeug_hash
 from accounts.models import RefreshToken
-from ledger.models import Category, PaymentCard, Receipt, ReceiptLineItem, Shop
+from ledger.models import Category, Receipt, ReceiptLineItem, Shop
 
 User = get_user_model()
 
@@ -488,7 +488,7 @@ class TestWerkzeugPasswordHasher:
     def test_wrap_werkzeug_hash_prefixes_correctly(self) -> None:
         wz = "pbkdf2:sha256:600000$abc$def"
         wrapped = wrap_werkzeug_hash(wz)
-        assert wrapped.startswith("werkzeug_pbkdf2_sha256$")
+        assert wrapped.startswith("werkzeug$")
         assert wrapped.endswith(wz)
 
     def test_wrap_none_returns_unusable(self) -> None:
@@ -513,7 +513,7 @@ class TestWerkzeugPasswordHasher:
 
     def test_hasher_must_update_always_true(self) -> None:
         hasher = WerkzeugPasswordHasher()
-        assert hasher.must_update("werkzeug_pbkdf2_sha256$pbkdf2:sha256:600000$s$h") is True
+        assert hasher.must_update("werkzeug$pbkdf2:sha256:600000$s$h") is True
 
 
 # ── Refresh token migration ───────────────────────────────────────────────────

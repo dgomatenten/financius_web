@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -30,7 +30,7 @@ def receipt(user: User, shop: Shop, category: Category, card: PaymentCard) -> Re
         shop=shop,
         category=category,
         payment_card=card,
-        receipt_date=datetime(2024, 1, 15, tzinfo=timezone.utc),
+        receipt_date=datetime(2024, 1, 15, tzinfo=UTC),
         currency="USD",
         subtotal=90.0,
         tax_amount=10.0,
@@ -49,7 +49,7 @@ class TestReceiptModel:
     def test_optional_fks_nullable(self, user: User) -> None:
         r = Receipt.objects.create(
             user=user,
-            receipt_date=datetime(2024, 1, 1, tzinfo=timezone.utc),
+            receipt_date=datetime(2024, 1, 1, tzinfo=UTC),
             currency="USD",
             total_amount=50.0,
         )

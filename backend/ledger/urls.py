@@ -4,8 +4,8 @@ from .views import (
     AmortizationDetailView,
     AmortizationListView,
     AnalyticsBLSView,
-    AnalyticsCategoryBreakdownView,
     AnalyticsCalendarView,
+    AnalyticsCategoryBreakdownView,
     AnalyticsInsightsView,
     AnalyticsSummaryView,
     AnalyticsYoYView,
@@ -39,7 +39,9 @@ urlpatterns = [
     path("receipts/<str:receipt_id>/", ReceiptDetailView.as_view()),
 
     # Sync
+    path("sync", SyncView.as_view()),
     path("sync/", SyncView.as_view()),
+    path("sync/status", SyncStatusView.as_view()),
     path("sync/status/", SyncStatusView.as_view()),
 
     # Master data — categories

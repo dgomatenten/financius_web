@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import sqlite3
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -107,6 +108,16 @@ def _rows(conn: sqlite3.Connection, table: str) -> list[sqlite3.Row]:
     return cur.fetchall()
 
 
+def _is_uuid_like(value: Any) -> bool:
+    if value is None:
+        return False
+    try:
+        uuid.UUID(str(value))
+    except (TypeError, ValueError):
+        return False
+    return True
+
+
 class _Rollback(Exception):
     pass
 
@@ -180,16 +191,26 @@ class Command(BaseCommand):
         for r in rows:
             email = r["email"].strip().lower()
             password = wrap_werkzeug_hash(r["password_hash"])
-            user, was_created = User.objects.update_or_create(
-                email=email,
-                defaults={
-                    "username": email,
-                    "password": password,
-                    "google_sub": r["google_sub"],
-                    "is_active": _bool(r["is_active"]),
-                    "last_sync_at": _dt(r["last_sync_at"]),
-                },
-            )
+            raw_id = str(r["id"]).strip() if r["id"] is not None else ""
+            defaults = {
+                "username": email,
+                "password": password,
+                "google_sub": r["google_sub"],
+                "is_active": _bool(r["is_active"]),
+                "last_sync_at": _dt(r["last_sync_at"]),
+            }
+
+            if _is_uuid_like(raw_id):
+                user, was_created = User.objects.update_or_create(
+                    pk=raw_id,
+                    defaults={"email": email, **defaults},
+                )
+            else:
+                user, was_created = User.objects.update_or_create(
+                    email=email,
+                    defaults=defaults,
+                )
+
             # r["id"] == email in Flask; map it to the Django UUID
             user_map[r["id"]] = str(user.pk)
             if was_created:
@@ -383,20 +404,27 @@ class Command(BaseCommand):
 
     def _migrate_refresh_tokens(self, conn: sqlite3.Connection, dry_run: bool, batch: int, user_map: UserMap) -> None:
         rows = _rows(conn, "refresh_tokens")
-        # Flask uses token_hash as the id (not a UUID); generate new UUIDs for Django.
         # Uniqueness is enforced by token_hash — skip rows already present.
+        # Preserve UUID source ids when available; generate UUIDs only for non-UUID ids.
         existing_hashes = set(RefreshToken.objects.values_list("token_hash", flat=True))
-        import uuid as _uuid
-        objs = [
-            RefreshToken(
-                user_id=self._uid(user_map, r["user_id"]),
-                token_hash=r["token_hash"],
+        objs: list[RefreshToken] = []
+        for r in rows:
+            token_hash = r["token_hash"]
+            if token_hash in existing_hashes:
+                continue
+
+            token_id = str(r["id"]).strip() if r["id"] is not None else ""
+            if not _is_uuid_like(token_id):
+                token_id = str(uuid.uuid4())
+
+            objs.append(
+                RefreshToken(
+                    id=token_id,
+                    user_id=self._uid(user_map, r["user_id"]),
+                    token_hash=token_hash,
+                )
             )
-            for r in rows
-            if r["token_hash"] not in existing_hashes
-        ]
-        for obj in objs:
-            obj.pk = _uuid.uuid4()
+
         self._bulk(RefreshToken, objs, batch)
         self._log("refresh_tokens", len(rows), len(objs), 0, len(rows) - len(objs))
 

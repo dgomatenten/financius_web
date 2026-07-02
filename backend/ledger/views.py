@@ -7,18 +7,16 @@ Android Retrofit clients can switch URLs without any client-side changes.
 from __future__ import annotations
 
 import hashlib
-import json
 import logging
 import re
 import secrets
-import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import F, OuterRef, Q, Subquery, Sum
+from django.db.models import Sum
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
